@@ -97,12 +97,11 @@ def send_with_optional_photo(chat_id: int, img_key: str, caption: str, reply_mar
     else:
         bot.send_message(chat_id, caption, parse_mode="Markdown", reply_markup=reply_markup)
 
-# Telegram caption limit ~1024 chars; message limit ~4096.
 def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
+    # message limit ~4096; keep a safe margin
     if len(text) <= 3500:
         bot.send_message(chat_id, text, parse_mode="Markdown", reply_markup=reply_markup)
         return
-    # split by paragraphs
     parts = text.split("\n\n")
     buf = ""
     for p in parts:
@@ -115,15 +114,73 @@ def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
         bot.send_message(chat_id, buf, parse_mode="Markdown", reply_markup=reply_markup)
 
 # =========================
-# CATALOG (editable)
+# CATALOG (ORDER AS REQUESTED)
+# TELE, FB, WEB, DOMAIN, MB, OTP
 # =========================
 CATALOG = [
+    # 1) TELE
+    {
+        "cat_id": "TELE",
+        "title": "📱 TELE",
+        "desc": (
+            "⭐ **DANH MỤC TELE**\n"
+            "✅ Giá rõ ràng – hỗ trợ nhanh – bàn giao gọn\n"
+            "👉 Chọn sản phẩm bên dưới 👇"
+        ),
+        "items": [
+            {
+                "item_id": "TELE_BASIC",
+                "name": "Tài khoản Telegram cơ bản",
+                "price": "25.000đ",
+                "detail": (
+                    "🐙 **Tài khoản Telegram cơ bản**\n"
+                    "💰 Giá: **25.000đ**\n"
+                    "📌 Hỗ trợ đăng nhập ban đầu"
+                ),
+                "buy_template": "MUA TELE CƠ BẢN | SL: 1 | Telegram: {u}"
+            },
+            {
+                "item_id": "TELE_ADV",
+                "name": "Tài khoản có tiện ích nâng cao",
+                "price": "200.000đ",
+                "detail": (
+                    "🐙 **Tài khoản Telegram có sẵn tiện ích nâng cao**\n"
+                    "💰 Giá: **200.000đ**\n"
+                    "📌 Phù hợp nhu cầu sử dụng nâng cao"
+                ),
+                "buy_template": "MUA TELE NÂNG CAO | SL: 1 | Telegram: {u}"
+            },
+            {
+                "item_id": "TELE_PHONE_PACK",
+                "name": "Gói số điện thoại đăng ký tài khoản",
+                "price": "80.000đ",
+                "detail": (
+                    "🐙 **Gói số điện thoại phục vụ đăng ký tài khoản**\n"
+                    "💰 Giá: **80.000đ / gói**\n"
+                    "📌 Hỗ trợ trong vòng **24h** nếu chưa sử dụng mà gặp sự cố (theo điều kiện)\n\n"
+                    "🎁 Mua từ **20** tặng:\n"
+                    "✅ 1 tiện ích nâng cao\n"
+                    "✅ hoặc 1 nhóm mẫu (~1.700 thành viên)\n\n"
+                    "📌 Khuyến nghị tăng cường bảo mật sau khi nhận"
+                ),
+                "buy_template": "MUA GÓI SỐ ĐK TELE | SL: 1 | Telegram: {u} | Nhu cầu: ..."
+            },
+        ],
+        "warranty": (
+            "⚠️ **LƯU Ý**\n"
+            "- Chủ động tăng cường bảo mật sau khi nhận\n"
+            "- Không áp dụng hỗ trợ nếu tài khoản bị hạn chế do vi phạm quy định"
+        )
+    },
+
+    # 2) FB
     {
         "cat_id": "FB",
-        "title": "📘 Facebook",
+        "title": "📘 FB",
         "desc": (
-            "⭐ **TÀI KHOẢN FACEBOOK – ĐA DẠNG NHU CẦU SỬ DỤNG**\n"
+            "⭐ **DANH MỤC FACEBOOK**\n"
             "✅ Giá rõ ràng – hỗ trợ nhanh – bàn giao gọn\n"
+            "👉 Chọn sản phẩm bên dưới 👇"
         ),
         "items": [
             {
@@ -143,11 +200,11 @@ CATALOG = [
                 "name": "Tài khoản quản lý Page",
                 "price": "250.000đ",
                 "detail": (
-                    "🟢 **Tài khoản quản lý Page – không liên kết WhatsApp**\n"
+                    "🟢 **Tài khoản quản lý Page**\n"
                     "💰 Giá: **250.000đ**\n"
-                    "📌 Đã xác minh danh tính\n"
+                    "📌 Đã xác minh danh tính (theo điều kiện)\n"
                     "📌 Khuyến nghị giữ nguyên thông tin ban đầu để đảm bảo ổn định\n"
-                    "📌 Bảo hành trạng thái hoạt động trong **24 giờ**"
+                    "📌 Hỗ trợ trong **24 giờ** (theo điều kiện)"
                 ),
                 "buy_template": "MUA FB QUẢN LÝ PAGE | SL: 1 | Telegram: {u}"
             },
@@ -179,208 +236,16 @@ CATALOG = [
         "warranty": (
             "⚠️ **CHÍNH SÁCH HỖ TRỢ**\n"
             "- Hỗ trợ đăng nhập ban đầu\n"
-            "- Bảo hành tình trạng hoạt động trong **24h** (tuỳ gói)\n"
+            "- Hỗ trợ trạng thái hoạt động trong **24h** (tuỳ gói/điều kiện)\n"
             "- Trường hợp vi phạm chính sách nền tảng sẽ **không áp dụng hỗ trợ**\n"
             "- Khuyến nghị đổi mật khẩu, email và thông tin bảo mật sau khi nhận"
         )
     },
-    {
-        "cat_id": "PAGE",
-        "title": "📄 Page Facebook",
-        "desc": "⭐ **PAGE ĐÃ HOẠT ĐỘNG & PHÁT TRỰC TIẾP**\n",
-        "items": [
-            {
-                "item_id": "PAGE_LIVE_QC",
-                "name": "Page livestream + quảng bá nội dung",
-                "price": "750.000đ",
-                "detail": (
-                    "🟢 **Page hỗ trợ livestream + quảng bá nội dung**\n"
-                    "💰 Giá: **750.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị\n"
-                    "📌 Check tính năng theo yêu cầu"
-                ),
-                "buy_template": "MUA PAGE LIVESTREAM | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "PAGE_VERIFY",
-                "name": "Page xác minh nâng cao",
-                "price": "1.500.000đ",
-                "detail": (
-                    "🟢 **Page xác minh nâng cao**\n"
-                    "💰 Giá: **1.500.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị"
-                ),
-                "buy_template": "MUA PAGE XÁC MINH | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "PAGE_BASIC",
-                "name": "Page cơ bản hoạt động ổn định",
-                "price": "150.000đ",
-                "detail": (
-                    "🟢 **Page cơ bản – hoạt động ổn định**\n"
-                    "💰 Giá: **150.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị"
-                ),
-                "buy_template": "MUA PAGE CƠ BẢN | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "PAGE_FOLLOW_1K",
-                "name": "Page có theo dõi ~1.000",
-                "price": "200.000đ",
-                "detail": (
-                    "🟢 **Page có lượng theo dõi sẵn ~1.000**\n"
-                    "💰 Giá: **200.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị"
-                ),
-                "buy_template": "MUA PAGE 1K FOLLOW | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "PAGE_FOLLOW_5K",
-                "name": "Page có theo dõi ~5.000",
-                "price": "450.000đ",
-                "detail": (
-                    "🟢 **Page có lượng theo dõi sẵn ~5.000**\n"
-                    "💰 Giá: **450.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị"
-                ),
-                "buy_template": "MUA PAGE 5K FOLLOW | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "PAGE_FOLLOW_10K",
-                "name": "Page có theo dõi ~10.000",
-                "price": "750.000đ",
-                "detail": (
-                    "🟢 **Page có lượng theo dõi sẵn ~10.000**\n"
-                    "💰 Giá: **750.000đ**\n"
-                    "📌 Bàn giao đầy đủ quyền quản trị"
-                ),
-                "buy_template": "MUA PAGE 10K FOLLOW | SL: 1 | Telegram: {u}"
-            },
-        ],
-        "warranty": (
-            "⚠️ **CHÍNH SÁCH HỖ TRỢ**\n"
-            "- Bàn giao đầy đủ quyền quản trị\n"
-            "- Hỗ trợ kiểm tra tính năng / đổi tên theo điều kiện gói\n"
-            "- Không hỗ trợ nếu sử dụng sai quy định nền tảng"
-        )
-    },
-    {
-        "cat_id": "TELE",
-        "title": "📱 Telegram",
-        "desc": "⭐ **TÀI KHOẢN / DỊCH VỤ TELEGRAM**\n",
-        "items": [
-            {
-                "item_id": "TELE_BASIC",
-                "name": "Tài khoản Telegram cơ bản",
-                "price": "25.000đ",
-                "detail": (
-                    "🐙 **Tài khoản Telegram cơ bản**\n"
-                    "💰 Giá: **25.000đ**\n"
-                    "📌 Hỗ trợ đăng nhập ban đầu"
-                ),
-                "buy_template": "MUA TELE CƠ BẢN | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "TELE_ADV",
-                "name": "Tài khoản có tiện ích nâng cao",
-                "price": "200.000đ",
-                "detail": (
-                    "🐙 **Tài khoản Telegram có sẵn tiện ích nâng cao**\n"
-                    "💰 Giá: **200.000đ**\n"
-                    "📌 Phù hợp nhu cầu sử dụng nâng cao"
-                ),
-                "buy_template": "MUA TELE NÂNG CAO | SL: 1 | Telegram: {u}"
-            },
-            {
-                "item_id": "TELE_PHONE_PACK",
-                "name": "Gói số điện thoại đăng ký tài khoản",
-                "price": "80.000đ",
-                "detail": (
-                    "🐙 **Gói số điện thoại phục vụ đăng ký tài khoản**\n"
-                    "💰 Giá: **80.000đ / gói**\n"
-                    "📌 Hỗ trợ trong vòng **24h** nếu chưa sử dụng mà gặp sự cố\n\n"
-                    "🎁 Mua từ **20 tài khoản** tặng:\n"
-                    "✅ 1 tiện ích nâng cao\n"
-                    "✅ hoặc 1 nhóm mẫu (~1.700 thành viên)\n\n"
-                    "📌 Khuyến nghị đổi mật khẩu & bật bảo mật 2 lớp sau khi nhận"
-                ),
-                "buy_template": "MUA GÓI SỐ ĐK | SL: 1 | Telegram: {u} | Nhu cầu: ..."
-            },
-        ],
-        "warranty": (
-            "⚠️ **LƯU Ý**\n"
-            "- Chủ động tăng cường bảo mật sau khi nhận\n"
-            "- Không áp dụng hỗ trợ nếu tài khoản bị hạn chế do vi phạm quy định"
-        )
-    },
-    {
-        "cat_id": "UPSTAR",
-        "title": "⭐ Nâng cấp Telegram",
-        "desc": "🤩 **BẢNG GIÁ NÂNG CẤP TIỆN ÍCH TELEGRAM**\n",
-        "items": [
-            {"item_id": "UP_1M", "name": "Gói 1 tháng", "price": "125.000đ",
-             "detail": "✅ **1 tháng** – **125.000đ**\n📌 Hỗ trợ theo thời hạn gói",
-             "buy_template": "MUA NÂNG CẤP TELE 1 THÁNG | Telegram: {u}"},
-            {"item_id": "UP_3M", "name": "Gói 3 tháng", "price": "380.000đ",
-             "detail": "✅ **3 tháng** – **380.000đ**\n📌 Hỗ trợ theo thời hạn gói",
-             "buy_template": "MUA NÂNG CẤP TELE 3 THÁNG | Telegram: {u}"},
-            {"item_id": "UP_6M", "name": "Gói 6 tháng", "price": "550.000đ",
-             "detail": "✅ **6 tháng** – **550.000đ**\n📌 Hỗ trợ theo thời hạn gói",
-             "buy_template": "MUA NÂNG CẤP TELE 6 THÁNG | Telegram: {u}"},
-            {"item_id": "UP_1Y", "name": "Gói 1 năm", "price": "850.000đ",
-             "detail": "✅ **1 năm** – **850.000đ**\n📌 Hỗ trợ theo thời hạn gói",
-             "buy_template": "MUA NÂNG CẤP TELE 1 NĂM | Telegram: {u}"},
-        ],
-        "warranty": (
-            "⚠️ **CHÍNH SÁCH HỖ TRỢ**\n"
-            "- Hỗ trợ theo thời hạn gói\n"
-            "- Không áp dụng hỗ trợ nếu tài khoản bị hạn chế do vi phạm"
-        )
-    },
-    {
-        "cat_id": "GROUP",
-        "title": "👥 Nhóm / Kênh Telegram",
-        "desc": "🚨 **NHÓM & KÊNH TELEGRAM – ĐỘ TIN CẬY CAO**\n",
-        "items": [
-            {"item_id": "G_2K", "name": "Nhóm/Kênh 1K7–2K mem", "price": "150.000đ",
-             "detail": "📱 **Nhóm/Kênh ~1.700–2.000 mem** – **150.000đ**\n📌 Bàn giao quyền sở hữu",
-             "buy_template": "MUA NHÓM 2K MEM | SL: 1 | Telegram: {u}"},
-            {"item_id": "G_5K", "name": "Nhóm/Kênh 5K mem", "price": "400.000đ",
-             "detail": "📱 **Nhóm/Kênh ~5.000 mem** – **400.000đ**\n📌 Bàn giao quyền sở hữu",
-             "buy_template": "MUA NHÓM 5K MEM | SL: 1 | Telegram: {u}"},
-            {"item_id": "G_10K", "name": "Nhóm/Kênh 10K mem", "price": "800.000đ",
-             "detail": "📱 **Nhóm/Kênh ~10.000 mem** – **800.000đ**\n📌 Bàn giao quyền sở hữu",
-             "buy_template": "MUA NHÓM 10K MEM | SL: 1 | Telegram: {u}"},
-            {"item_id": "G_20K", "name": "Nhóm/Kênh 20K mem", "price": "1.500.000đ",
-             "detail": "📱 **Nhóm/Kênh ~20.000 mem** – **1.500.000đ**\n📌 Bàn giao quyền sở hữu",
-             "buy_template": "MUA NHÓM 20K MEM | SL: 1 | Telegram: {u}"},
-            {"item_id": "ONLINE_500", "name": "Gói online 500", "price": "400.000đ",
-             "detail": "🟢 **500 online** – **400.000đ**\n🎁 Thời hạn 30 ngày\n📌 Hỗ trợ nếu chỉ số không duy trì theo cam kết",
-             "buy_template": "MUA GÓI ONLINE 500 | Telegram: {u}"},
-            {"item_id": "ONLINE_1K", "name": "Gói online 1K", "price": "800.000đ",
-             "detail": "🟢 **1K online** – **800.000đ**\n🎁 Thời hạn 30 ngày\n📌 Hỗ trợ nếu chỉ số không duy trì theo cam kết",
-             "buy_template": "MUA GÓI ONLINE 1K | Telegram: {u}"},
-            {"item_id": "ONLINE_2K", "name": "Gói online 2K", "price": "1.500.000đ",
-             "detail": "🟢 **2K online** – **1.500.000đ**\n🎁 Thời hạn 30 ngày\n📌 Hỗ trợ nếu chỉ số không duy trì theo cam kết",
-             "buy_template": "MUA GÓI ONLINE 2K | Telegram: {u}"},
-            {"item_id": "ONLINE_5K", "name": "Gói online 5K", "price": "4.000.000đ",
-             "detail": "🟢 **5K online** – **4.000.000đ**\n🎁 Thời hạn 30 ngày\n📌 Hỗ trợ nếu chỉ số không duy trì theo cam kết",
-             "buy_template": "MUA GÓI ONLINE 5K | Telegram: {u}"},
-            {"item_id": "ONLINE_10K", "name": "Gói online 10K", "price": "7.500.000đ",
-             "detail": "🟢 **10K online** – **7.500.000đ**\n🎁 Thời hạn 30 ngày\n📌 Hỗ trợ nếu chỉ số không duy trì theo cam kết",
-             "buy_template": "MUA GÓI ONLINE 10K | Telegram: {u}"},
-        ],
-        "warranty": (
-            "🎁 Mua **8 nhóm** tặng **1 nhóm cùng loại**\n\n"
-            "⚠️ **CHÍNH SÁCH HỖ TRỢ**\n"
-            "- Bàn giao bằng chuyển quyền chủ sở hữu\n"
-            "- Hỗ trợ **1 lần/7 ngày** nếu phát sinh lỗi kỹ thuật\n"
-            "- Không hỗ trợ nếu thao tác sai quy trình/vi phạm quy định"
-        )
-    },
+
+    # 3) LÀM WEB
     {
         "cat_id": "WEB",
-        "title": "🖥️ Làm Website",
+        "title": "🖥️ LÀM WEB",
         "desc": (
             "🖥️ **LÀM WEBSITE**\n"
             "💬 **Giá:** Thương lượng theo nhu cầu\n\n"
@@ -389,12 +254,104 @@ CATALOG = [
             "✅ Tối ưu tốc độ – giao diện đẹp\n\n"
             "👉 Nhấn **NHẮN ADMIN** để báo yêu cầu, admin tư vấn & báo giá 👇"
         ),
-        "items": [],
+        "items": [
+            {
+                "item_id": "WEB_QUOTE",
+                "name": "Tư vấn & báo giá website",
+                "price": "Thương lượng",
+                "detail": (
+                    "🖥️ **TƯ VẤN & BÁO GIÁ WEBSITE**\n"
+                    "💬 Giá: **Thương lượng**\n\n"
+                    "📌 Bạn gửi admin nhu cầu: loại web, chức năng, mẫu tham khảo, thời gian hoàn thành."
+                ),
+                "buy_template": "TƯ VẤN WEBSITE | Loại web: ... | Mục tiêu: ... | Tham khảo: ... | Telegram: {u}"
+            },
+        ],
         "warranty": ""
-    }
+    },
+
+    # 4) TÊN MIỀN
+    {
+        "cat_id": "DOMAIN",
+        "title": "🌐 TÊN MIỀN",
+        "desc": (
+            "🌐 **TÊN MIỀN – ĐỒNG GIÁ 370.000đ / 1 DOMAIN**\n\n"
+            "✅ **Bảo hành suốt thời gian sử dụng**\n"
+            "✅ **Đổi hậu đài ~ 3 phút**\n"
+            "📌 Hỗ trợ chọn đuôi/keyword theo nhu cầu\n\n"
+            "👉 Chọn mục bên dưới để mua 👇"
+        ),
+        "items": [
+            {
+                "item_id": "DOMAIN_370",
+                "name": "Tên miền đồng giá",
+                "price": "370.000đ",
+                "detail": (
+                    "🌐 **TÊN MIỀN – 370.000đ / 1 DOMAIN**\n\n"
+                    "✅ Bảo hành suốt thời gian sử dụng\n"
+                    "✅ Đổi hậu đài ~ 3 phút\n\n"
+                    "📌 Khi nhắn admin, bạn ghi rõ: đuôi mong muốn (.com/.net/...) + keyword."
+                ),
+                "buy_template": "MUA TÊN MIỀN | Đuôi: .com/.net/... | Keyword: ... | Telegram: {u}"
+            },
+        ],
+        "warranty": ""
+    },
+
+    # 5) STK MB BANK
+    {
+        "cat_id": "MB",
+        "title": "🏦 STK MB BANK",
+        "desc": (
+            "🏦 **TK MB BANK – 13.000đ / 1 TK**\n"
+            "🎮 Phù hợp nhu cầu tạo tài khoản game\n"
+            "⚡ Giao nhanh sau khi xác nhận thanh toán\n\n"
+            "👉 Chọn mục bên dưới để mua 👇"
+        ),
+        "items": [
+            {
+                "item_id": "MB_13K",
+                "name": "TK MB Bank",
+                "price": "13.000đ",
+                "detail": (
+                    "🏦 **TK MB BANK**\n"
+                    "💰 Giá: **13.000đ / 1 TK**\n"
+                    "🎮 Chuyên dùng tạo tài khoản game\n"
+                    "⚡ Giao nhanh sau khi xác nhận thanh toán"
+                ),
+                "buy_template": "MUA TK MB BANK | SL: 1 | Telegram: {u}"
+            },
+        ],
+        "warranty": ""
+    },
+
+    # 6) OTP SDT
+    {
+        "cat_id": "OTP",
+        "title": "📲 OTP SDT",
+        "desc": (
+            "📲 **SĐT ĐĂNG KÝ GAME (OTP)**\n"
+            "💰 **7.000đ / 1 OTP**\n"
+            "⚡ Hỗ trợ nhanh – thao tác đơn giản\n\n"
+            "👉 Chọn mục bên dưới để mua 👇"
+        ),
+        "items": [
+            {
+                "item_id": "OTP_7K",
+                "name": "OTP SĐT đăng ký game",
+                "price": "7.000đ",
+                "detail": (
+                    "📲 **OTP SĐT ĐĂNG KÝ GAME**\n"
+                    "💰 Giá: **7.000đ / 1 OTP**\n\n"
+                    "📌 Khi nhắn admin, bạn ghi rõ nền tảng/game cần OTP."
+                ),
+                "buy_template": "MUA OTP GAME | SL: 1 | Nền tảng/game: ... | Telegram: {u}"
+            },
+        ],
+        "warranty": ""
+    },
 ]
 
-# quick map
 CAT_BY_ID = {c["cat_id"]: c for c in CATALOG}
 ITEM_BY_ID = {}
 for c in CATALOG:
@@ -406,6 +363,7 @@ for c in CATALOG:
 # =========================
 def kb_main():
     kb = types.InlineKeyboardMarkup(row_width=1)
+    # order already as user requested
     for c in CATALOG:
         kb.add(types.InlineKeyboardButton(c["title"], callback_data=f"CAT|{c['cat_id']}"))
     kb.add(types.InlineKeyboardButton("💳 THÔNG TIN THANH TOÁN", callback_data="PAY"))
@@ -424,11 +382,7 @@ def kb_category(cat_id: str):
         kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
         return kb
 
-    if cat_id == "WEB":
-        kb.add(types.InlineKeyboardButton("📩 NHẮN ADMIN (TƯ VẤN WEBSITE)", url=admin_url()))
-        kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
-        return kb
-
+    # list items inside category
     for it in cat.get("items", []):
         label = f"{it['name']} | {it['price']}"
         kb.add(types.InlineKeyboardButton(label, callback_data=f"ITEM|{it['item_id']}"))
@@ -477,7 +431,7 @@ def text_payment():
         f"🔢 **STK:** {ACCOUNT_NO}\n\n"
         "✅ **NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC):**\n"
         "`@username + TÊN SẢN PHẨM`\n"
-        "Ví dụ: `@abc FB HOẠT ĐỘNG CAO` / `@abc PAGE 10K FOLLOW` / `@abc TELE CƠ BẢN`\n\n"
+        "Ví dụ: `@abc MB BANK` / `@abc TÊN MIỀN` / `@abc OTP` / `@abc TELE CƠ BẢN`\n\n"
         "📌 Chuyển xong, chụp bill gửi admin để xác nhận nhanh."
     )
 
@@ -532,8 +486,8 @@ def cmd_getid(message):
         "Nếu bạn là admin muốn gắn ảnh cho từng màn:\n"
         "- `/setimg START` (banner)\n"
         "- `/setimg PAYMENT` (màn thanh toán)\n"
-        "- `/setimg CAT_FB` / `CAT_PAGE` / `CAT_TELE` / `CAT_UPSTAR` / `CAT_GROUP` / `CAT_WEB`\n"
-        "- `/setimg ITEM_<ID>` (ví dụ: `ITEM_FB_ACTIVE`)\n\n"
+        "- `/setimg CAT_<DANH_MỤC>` (ví dụ: `CAT_TELE`)\n"
+        "- `/setimg ITEM_<ID>` (ví dụ: `ITEM_MB_13K`)\n\n"
         "Xem danh sách KEY đầy đủ bằng lệnh: `/listkeys`",
         parse_mode="Markdown"
     )
@@ -545,8 +499,6 @@ def cmd_listkeys(message):
         keys.append(img_key_for_category(c["cat_id"]))
         for it in c.get("items", []):
             keys.append(img_key_for_item(it["item_id"]))
-
-    # gửi gọn (nếu dài thì chia)
     text = "🗂️ **Danh sách KEY ảnh có thể gắn:**\n\n" + "\n".join([f"- `{k}`" for k in keys])
     safe_send_markdown(message.chat.id, text)
 
@@ -571,7 +523,7 @@ def cmd_setimg(message):
 def on_photo(message):
     file_id = message.photo[-1].file_id
 
-    # luôn trả file_id cho người gửi (đúng yêu cầu /getid)
+    # luôn trả file_id cho người gửi
     bot.reply_to(message, f"✅ file_id:\n`{file_id}`", parse_mode="Markdown")
 
     # nếu admin đang setimg
@@ -605,6 +557,7 @@ def on_callback(call):
             img_key = img_key_for_category(cat_id)
             send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_category(cat_id))
 
+            # bonus: nếu là WEB thì gửi thêm mẫu nhắn admin
             if cat_id == "WEB":
                 u = f"@{call.from_user.username}" if call.from_user.username else "@username"
                 safe_send_markdown(
