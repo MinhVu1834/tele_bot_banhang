@@ -3,6 +3,7 @@ import sqlite3
 import threading
 import time
 from datetime import datetime
+from urllib.parse import quote
 
 import telebot
 from telebot import types
@@ -14,7 +15,8 @@ from flask import Flask, request
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "@min_max1834").strip()  # @username
-ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # optional (khuyên set để /setimg chỉ admin)
+ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # optional - recommended
+SHOP_NAME = os.getenv("SHOP_NAME", "SHOP X").strip()
 
 BANK_NAME = os.getenv("BANK_NAME", "VCB").strip()
 ACCOUNT_NAME = os.getenv("ACCOUNT_NAME", "A HI HI").strip()
@@ -22,8 +24,6 @@ ACCOUNT_NO = os.getenv("ACCOUNT_NO", "0311000742866").strip()
 
 PORT = int(os.getenv("PORT", "10000"))
 DB_PATH = os.getenv("DB_PATH", "data.db")
-
-SHOP_NAME = os.getenv("SHOP_NAME", "SHOP X").strip()
 
 if not BOT_TOKEN:
     raise RuntimeError("Missing BOT_TOKEN env var")
@@ -79,14 +79,16 @@ def get_image(key: str):
 # =========================
 # Helpers
 # =========================
+def admin_username_clean() -> str:
+    return ADMIN_USERNAME.lstrip("@")
+
 def admin_url() -> str:
-    u = ADMIN_USERNAME.lstrip("@")
-    return f"https://t.me/{u}"
+    return f"https://t.me/{admin_username_clean()}"
 
 def is_admin(user) -> bool:
     if ADMIN_CHAT_ID and user.id == ADMIN_CHAT_ID:
         return True
-    admin_u = ADMIN_USERNAME.lstrip("@").lower()
+    admin_u = admin_username_clean().lower()
     u = (user.username or "").lower()
     return u == admin_u
 
@@ -98,7 +100,7 @@ def send_with_optional_photo(chat_id: int, img_key: str, caption: str, reply_mar
         bot.send_message(chat_id, caption, parse_mode="Markdown", reply_markup=reply_markup)
 
 def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
-    # message limit ~4096; keep a safe margin
+    # message limit ~4096; keep margin
     if len(text) <= 3500:
         bot.send_message(chat_id, text, parse_mode="Markdown", reply_markup=reply_markup)
         return
@@ -113,161 +115,197 @@ def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
     if buf:
         bot.send_message(chat_id, buf, parse_mode="Markdown", reply_markup=reply_markup)
 
+def build_prefilled_admin_link(text: str) -> str:
+    # Opens admin chat with prefilled message
+    return f"https://t.me/{admin_username_clean()}?text={quote(text)}"
+
+def user_tag(from_user) -> str:
+    return f"@{from_user.username}" if from_user.username else "@username"
+
 # =========================
-# CATALOG (ORDER AS REQUESTED)
-# TELE, FB, WEB, DOMAIN, MB, OTP
+# Catalog (menu 6 mục, bên trong có sản phẩm nhỏ)
 # =========================
+# Lưu ý: Đây là khung catalog “marketing”, bạn chỉnh text/giá thoải mái.
 CATALOG = [
     # 1) TELE
     {
         "cat_id": "TELE",
         "title": "📱 TELE",
-        "desc": (
-            "⭐ **DANH MỤC TELE**\n"
-            "✅ Giá rõ ràng – hỗ trợ nhanh – bàn giao gọn\n"
-            "👉 Chọn sản phẩm bên dưới 👇"
-        ),
+        "desc": "📱 **TELE – Danh mục sản phẩm**\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
-                "item_id": "TELE_BASIC",
+                "item_id": "TELE_CLONE",
+                "group": "TELE",
                 "name": "Tài khoản Telegram cơ bản",
                 "price": "25.000đ",
-                "detail": (
-                    "🐙 **Tài khoản Telegram cơ bản**\n"
-                    "💰 Giá: **25.000đ**\n"
-                    "📌 Hỗ trợ đăng nhập ban đầu"
-                ),
-                "buy_template": "MUA TELE CƠ BẢN | SL: 1 | Telegram: {u}"
+                "detail": "🐙 **Tài khoản Telegram cơ bản**\n💰 Giá: **25.000đ**\n📌 Hỗ trợ đăng nhập ban đầu (theo điều kiện)",
+                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
             },
             {
-                "item_id": "TELE_ADV",
-                "name": "Tài khoản có tiện ích nâng cao",
+                "item_id": "TELE_VIP",
+                "group": "TELE",
+                "name": "Tài khoản Telegram tiện ích nâng cao",
                 "price": "200.000đ",
-                "detail": (
-                    "🐙 **Tài khoản Telegram có sẵn tiện ích nâng cao**\n"
-                    "💰 Giá: **200.000đ**\n"
-                    "📌 Phù hợp nhu cầu sử dụng nâng cao"
-                ),
-                "buy_template": "MUA TELE NÂNG CAO | SL: 1 | Telegram: {u}"
+                "detail": "🐙 **Tài khoản Telegram tiện ích nâng cao**\n💰 Giá: **200.000đ**\n📌 Phù hợp nhu cầu sử dụng nâng cao",
+                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
             },
             {
-                "item_id": "TELE_PHONE_PACK",
-                "name": "Gói số điện thoại đăng ký tài khoản",
+                "item_id": "TELE_PACK",
+                "group": "TELE",
+                "name": "Gói số điện thoại đăng ký (gói 50)",
                 "price": "80.000đ",
+                "detail": "🐙 **Gói số điện thoại đăng ký**\n💰 Giá: **80.000đ**\n📌 Hỗ trợ theo điều kiện gói\n🎁 Mua số lượng có ưu đãi (tuỳ thời điểm)",
+                "require_hint": "Yêu cầu: SL | Mục đích sử dụng"
+            },
+            {
+                "item_id": "TELE_UPSTAR",
+                "group": "TELE",
+                "name": "Nâng cấp Telegram (bảng gói)",
+                "price": "Xem chi tiết",
                 "detail": (
-                    "🐙 **Gói số điện thoại phục vụ đăng ký tài khoản**\n"
-                    "💰 Giá: **80.000đ / gói**\n"
-                    "📌 Hỗ trợ trong vòng **24h** nếu chưa sử dụng mà gặp sự cố (theo điều kiện)\n\n"
-                    "🎁 Mua từ **20** tặng:\n"
-                    "✅ 1 tiện ích nâng cao\n"
-                    "✅ hoặc 1 nhóm mẫu (~1.700 thành viên)\n\n"
-                    "📌 Khuyến nghị tăng cường bảo mật sau khi nhận"
+                    "🤩 **NÂNG CẤP TELEGRAM**\n\n"
+                    "✅ 1 tháng: **125.000đ**\n"
+                    "✅ 3 tháng: **380.000đ**\n"
+                    "✅ 6 tháng: **550.000đ**\n"
+                    "✅ 1 năm: **850.000đ**\n\n"
+                    "📌 Hỗ trợ theo thời hạn gói"
                 ),
-                "buy_template": "MUA GÓI SỐ ĐK TELE | SL: 1 | Telegram: {u} | Nhu cầu: ..."
+                "require_hint": "Yêu cầu: gói (1m/3m/6m/1y)"
+            },
+            {
+                "item_id": "TELE_GROUP",
+                "group": "TELE",
+                "name": "Nhóm/Kênh Telegram (bảng size)",
+                "price": "Xem chi tiết",
+                "detail": (
+                    "👥 **NHÓM/KÊNH TELEGRAM**\n\n"
+                    "📱 1K7–2K mem: **150.000đ**\n"
+                    "📱 5K mem: **400.000đ**\n"
+                    "📱 10K mem: **800.000đ**\n"
+                    "📱 20K mem: **1.500.000đ**\n\n"
+                    "🎁 Mua 8 tặng 1 (cùng loại)\n"
+                    "📌 Bàn giao quyền sở hữu theo quy trình"
+                ),
+                "require_hint": "Yêu cầu: size nhóm/kênh"
             },
         ],
-        "warranty": (
-            "⚠️ **LƯU Ý**\n"
-            "- Chủ động tăng cường bảo mật sau khi nhận\n"
-            "- Không áp dụng hỗ trợ nếu tài khoản bị hạn chế do vi phạm quy định"
-        )
+        "img_key": "CAT_TELE",
     },
 
-    # 2) FB
+    # 2) FACEBOOK
     {
         "cat_id": "FB",
-        "title": "📘 FB",
-        "desc": (
-            "⭐ **DANH MỤC FACEBOOK**\n"
-            "✅ Giá rõ ràng – hỗ trợ nhanh – bàn giao gọn\n"
-            "👉 Chọn sản phẩm bên dưới 👇"
-        ),
+        "title": "📘 FACEBOOK",
+        "desc": "📘 **FACEBOOK – Danh mục sản phẩm**\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "FB_ACTIVE",
+                "group": "FACEBOOK",
                 "name": "Tài khoản hoạt động cao",
                 "price": "150.000đ",
-                "detail": (
-                    "🟢 **Tài khoản hoạt động cao – phù hợp đăng bài & quản lý nội dung**\n"
-                    "💰 Giá: **150.000đ**\n"
-                    "📌 Phù hợp cho nhu cầu chia sẻ nội dung thường xuyên\n"
-                    "📌 Không áp dụng bảo hành dài hạn"
-                ),
-                "buy_template": "MUA FB HOẠT ĐỘNG CAO | SL: 1 | Telegram: {u}"
+                "detail": "🟢 **Tài khoản hoạt động cao**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
+                "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "FB_PAGE_MANAGER",
+                "group": "FACEBOOK",
                 "name": "Tài khoản quản lý Page",
                 "price": "250.000đ",
-                "detail": (
-                    "🟢 **Tài khoản quản lý Page**\n"
-                    "💰 Giá: **250.000đ**\n"
-                    "📌 Đã xác minh danh tính (theo điều kiện)\n"
-                    "📌 Khuyến nghị giữ nguyên thông tin ban đầu để đảm bảo ổn định\n"
-                    "📌 Hỗ trợ trong **24 giờ** (theo điều kiện)"
-                ),
-                "buy_template": "MUA FB QUẢN LÝ PAGE | SL: 1 | Telegram: {u}"
+                "detail": "🟢 **Tài khoản quản lý Page**\n💰 Giá: **250.000đ**\n📌 Hỗ trợ theo điều kiện gói",
+                "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "FB_OLD",
+                "group": "FACEBOOK",
                 "name": "Tài khoản lâu năm 2019–2024",
-                "price": "450.000đ–1.500.000đ",
-                "detail": (
-                    "🟢 **Tài khoản lâu năm (2019 – 2024)**\n"
-                    "💰 Giá: **450.000đ – 1.500.000đ**\n"
-                    "📌 Có lịch sử hoạt động & bài đăng\n"
-                    "📌 Phù hợp xây dựng hình ảnh cá nhân / thương hiệu\n"
-                    "📌 Có ID để khách kiểm tra & lựa chọn"
-                ),
-                "buy_template": "MUA FB LÂU NĂM | Nhu cầu: ... | Telegram: {u}"
+                "price": "450.000đ – 1.500.000đ",
+                "detail": "🟢 **Tài khoản lâu năm (2019–2024)**\n💰 Giá: **450.000đ – 1.500.000đ**\n📌 Có lựa chọn theo nhu cầu",
+                "require_hint": "Yêu cầu: năm/tiêu chí lựa chọn"
             },
             {
                 "item_id": "FB_VERIFY",
+                "group": "FACEBOOK",
                 "name": "Tài khoản xác minh nâng cao",
                 "price": "500.000đ (duy trì 200k/tháng)",
-                "detail": (
-                    "🟢 **Tài khoản xác minh nâng cao**\n"
-                    "💰 Giá: **500.000đ**\n"
-                    "📌 Phí duy trì hàng tháng: **200.000đ**"
-                ),
-                "buy_template": "MUA FB XÁC MINH NÂNG CAO | SL: 1 | Telegram: {u}"
+                "detail": "🟢 **Xác minh nâng cao**\n💰 Giá: **500.000đ**\n📌 Duy trì: **200.000đ/tháng**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            # PAGE FB (gộp chung trong mục FACEBOOK để khách dễ bấm)
+            {
+                "item_id": "PAGE_LIVE",
+                "group": "FACEBOOK",
+                "name": "Page livestream + quảng bá",
+                "price": "750.000đ",
+                "detail": "📄 **Page livestream + quảng bá**\n💰 Giá: **750.000đ**\n📌 Bàn giao quyền quản trị theo quy trình",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            {
+                "item_id": "PAGE_VERIFY",
+                "group": "FACEBOOK",
+                "name": "Page xác minh nâng cao",
+                "price": "1.500.000đ",
+                "detail": "📄 **Page xác minh nâng cao**\n💰 Giá: **1.500.000đ**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            {
+                "item_id": "PAGE_BASIC",
+                "group": "FACEBOOK",
+                "name": "Page cơ bản hoạt động ổn định",
+                "price": "150.000đ",
+                "detail": "📄 **Page cơ bản**\n💰 Giá: **150.000đ**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            {
+                "item_id": "PAGE_1K",
+                "group": "FACEBOOK",
+                "name": "Page có theo dõi ~1K",
+                "price": "200.000đ",
+                "detail": "📄 **Page ~1K theo dõi**\n💰 Giá: **200.000đ**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            {
+                "item_id": "PAGE_5K",
+                "group": "FACEBOOK",
+                "name": "Page có theo dõi ~5K",
+                "price": "450.000đ",
+                "detail": "📄 **Page ~5K theo dõi**\n💰 Giá: **450.000đ**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
+            },
+            {
+                "item_id": "PAGE_10K",
+                "group": "FACEBOOK",
+                "name": "Page có theo dõi ~10K",
+                "price": "750.000đ",
+                "detail": "📄 **Page ~10K theo dõi**\n💰 Giá: **750.000đ**",
+                "require_hint": "Yêu cầu: SL/ghi chú"
             },
         ],
-        "warranty": (
-            "⚠️ **CHÍNH SÁCH HỖ TRỢ**\n"
-            "- Hỗ trợ đăng nhập ban đầu\n"
-            "- Hỗ trợ trạng thái hoạt động trong **24h** (tuỳ gói/điều kiện)\n"
-            "- Trường hợp vi phạm chính sách nền tảng sẽ **không áp dụng hỗ trợ**\n"
-            "- Khuyến nghị đổi mật khẩu, email và thông tin bảo mật sau khi nhận"
-        )
+        "img_key": "CAT_FB",
     },
 
     # 3) LÀM WEB
     {
         "cat_id": "WEB",
         "title": "🖥️ LÀM WEB",
-        "desc": (
-            "🖥️ **LÀM WEBSITE**\n"
-            "💬 **Giá:** Thương lượng theo nhu cầu\n\n"
-            "✅ Landing page / website bán hàng / giới thiệu\n"
-            "✅ Có hosting + domain (nếu cần)\n"
-            "✅ Tối ưu tốc độ – giao diện đẹp\n\n"
-            "👉 Nhấn **NHẮN ADMIN** để báo yêu cầu, admin tư vấn & báo giá 👇"
-        ),
+        "desc": "🖥️ **LÀM WEBSITE**\n💬 **Giá:** thương lượng theo nhu cầu\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "WEB_QUOTE",
+                "group": "LÀM WEB",
                 "name": "Tư vấn & báo giá website",
                 "price": "Thương lượng",
                 "detail": (
-                    "🖥️ **TƯ VẤN & BÁO GIÁ WEBSITE**\n"
-                    "💬 Giá: **Thương lượng**\n\n"
-                    "📌 Bạn gửi admin nhu cầu: loại web, chức năng, mẫu tham khảo, thời gian hoàn thành."
+                    "🖥️ **TƯ VẤN & BÁO GIÁ WEBSITE**\n\n"
+                    "📌 Bạn gửi admin các thông tin:\n"
+                    "- Loại web (landing/bán hàng/giới thiệu)\n"
+                    "- Chức năng cần có\n"
+                    "- Mẫu tham khảo\n"
+                    "- Thời gian mong muốn\n"
                 ),
-                "buy_template": "TƯ VẤN WEBSITE | Loại web: ... | Mục tiêu: ... | Tham khảo: ... | Telegram: {u}"
+                "require_hint": "Yêu cầu: loại web/chức năng/mẫu"
             },
         ],
-        "warranty": ""
+        "img_key": "CAT_WEB",
     },
 
     # 4) TÊN MIỀN
@@ -275,80 +313,63 @@ CATALOG = [
         "cat_id": "DOMAIN",
         "title": "🌐 TÊN MIỀN",
         "desc": (
-            "🌐 **TÊN MIỀN – ĐỒNG GIÁ 370.000đ / 1 DOMAIN**\n\n"
-            "✅ **Bảo hành suốt thời gian sử dụng**\n"
-            "✅ **Đổi hậu đài ~ 3 phút**\n"
-            "📌 Hỗ trợ chọn đuôi/keyword theo nhu cầu\n\n"
-            "👉 Chọn mục bên dưới để mua 👇"
+            "🌐 **TÊN MIỀN – 370K / 1 domain**\n"
+            "✅ Bảo hành suốt thời gian sử dụng\n"
+            "✅ Đổi hậu đài ~ 3 phút\n"
+            "👉 Chọn mục bên dưới 👇"
         ),
         "items": [
             {
                 "item_id": "DOMAIN_370",
+                "group": "TÊN MIỀN",
                 "name": "Tên miền đồng giá",
                 "price": "370.000đ",
                 "detail": (
-                    "🌐 **TÊN MIỀN – 370.000đ / 1 DOMAIN**\n\n"
+                    "🌐 **Tên miền đồng giá 370K**\n\n"
                     "✅ Bảo hành suốt thời gian sử dụng\n"
                     "✅ Đổi hậu đài ~ 3 phút\n\n"
-                    "📌 Khi nhắn admin, bạn ghi rõ: đuôi mong muốn (.com/.net/...) + keyword."
+                    "📌 Khi mua, ghi rõ **đuôi** (.com/.net/...) và **keyword**."
                 ),
-                "buy_template": "MUA TÊN MIỀN | Đuôi: .com/.net/... | Keyword: ... | Telegram: {u}"
+                "require_hint": "Yêu cầu: đuôi/keyword"
             },
         ],
-        "warranty": ""
+        "img_key": "CAT_DOMAIN",
     },
 
     # 5) STK MB BANK
     {
         "cat_id": "MB",
         "title": "🏦 STK MB BANK",
-        "desc": (
-            "🏦 **TK MB BANK – 13.000đ / 1 TK**\n"
-            "🎮 Phù hợp nhu cầu tạo tài khoản game\n"
-            "⚡ Giao nhanh sau khi xác nhận thanh toán\n\n"
-            "👉 Chọn mục bên dưới để mua 👇"
-        ),
+        "desc": "🏦 **TK MB Bank**\n💰 13K / 1 TK\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "MB_13K",
+                "group": "MB BANK",
                 "name": "TK MB Bank",
                 "price": "13.000đ",
-                "detail": (
-                    "🏦 **TK MB BANK**\n"
-                    "💰 Giá: **13.000đ / 1 TK**\n"
-                    "🎮 Chuyên dùng tạo tài khoản game\n"
-                    "⚡ Giao nhanh sau khi xác nhận thanh toán"
-                ),
-                "buy_template": "MUA TK MB BANK | SL: 1 | Telegram: {u}"
+                "detail": "🏦 **TK MB Bank**\n💰 Giá: **13.000đ / 1 TK**\n📌 Dùng theo nhu cầu tạo tài khoản game",
+                "require_hint": "Yêu cầu: SL"
             },
         ],
-        "warranty": ""
+        "img_key": "CAT_MB",
     },
 
-    # 6) OTP SDT
+    # 6) OTP SĐT
     {
         "cat_id": "OTP",
-        "title": "📲 OTP SDT",
-        "desc": (
-            "📲 **SĐT ĐĂNG KÝ GAME (OTP)**\n"
-            "💰 **7.000đ / 1 OTP**\n"
-            "⚡ Hỗ trợ nhanh – thao tác đơn giản\n\n"
-            "👉 Chọn mục bên dưới để mua 👇"
-        ),
+        "title": "📲 OTP SĐT",
+        "desc": "📲 **OTP SĐT đăng ký game**\n💰 7K / 1 OTP\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "OTP_7K",
+                "group": "OTP",
                 "name": "OTP SĐT đăng ký game",
                 "price": "7.000đ",
-                "detail": (
-                    "📲 **OTP SĐT ĐĂNG KÝ GAME**\n"
-                    "💰 Giá: **7.000đ / 1 OTP**\n\n"
-                    "📌 Khi nhắn admin, bạn ghi rõ nền tảng/game cần OTP."
-                ),
-                "buy_template": "MUA OTP GAME | SL: 1 | Nền tảng/game: ... | Telegram: {u}"
+                "detail": "📲 **OTP SĐT đăng ký game**\n💰 Giá: **7.000đ / 1 OTP**\n📌 Khi mua, ghi rõ nền tảng/game cần OTP.",
+                "require_hint": "Yêu cầu: nền tảng/game"
             },
         ],
-        "warranty": ""
+        "img_key": "CAT_OTP",
     },
 ]
 
@@ -359,68 +380,64 @@ for c in CATALOG:
         ITEM_BY_ID[it["item_id"]] = (c["cat_id"], it)
 
 # =========================
-# UI Builders
+# UI (menu chính 2 cột)
 # =========================
 def kb_main():
-    kb = types.InlineKeyboardMarkup(row_width=1)
-    # order already as user requested
-    for c in CATALOG:
-        kb.add(types.InlineKeyboardButton(c["title"], callback_data=f"CAT|{c['cat_id']}"))
-    kb.add(types.InlineKeyboardButton("💳 THÔNG TIN THANH TOÁN", callback_data="PAY"))
-    kb.add(types.InlineKeyboardButton("📩 LIÊN HỆ ADMIN", url=admin_url()))
-    return kb
-
-def kb_back_main():
-    kb = types.InlineKeyboardMarkup(row_width=1)
-    kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    # 6 mục, 2 cột
+    kb.add(
+        types.InlineKeyboardButton("📱 TELE", callback_data="CAT|TELE"),
+        types.InlineKeyboardButton("📘 FACEBOOK", callback_data="CAT|FB"),
+        types.InlineKeyboardButton("🖥️ LÀM WEB", callback_data="CAT|WEB"),
+        types.InlineKeyboardButton("🌐 TÊN MIỀN", callback_data="CAT|DOMAIN"),
+        types.InlineKeyboardButton("🏦 STK MB BANK", callback_data="CAT|MB"),
+        types.InlineKeyboardButton("📲 OTP SĐT", callback_data="CAT|OTP"),
+    )
+    # hàng phụ
+    kb.add(
+        types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"),
+        types.InlineKeyboardButton("📩 Admin", url=admin_url()),
+    )
     return kb
 
 def kb_category(cat_id: str):
     kb = types.InlineKeyboardMarkup(row_width=1)
     cat = CAT_BY_ID.get(cat_id)
     if not cat:
-        kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
+        kb.add(types.InlineKeyboardButton("⏪ Quay lại", callback_data="BACK_MAIN"))
         return kb
 
-    # list items inside category
     for it in cat.get("items", []):
         label = f"{it['name']} | {it['price']}"
         kb.add(types.InlineKeyboardButton(label, callback_data=f"ITEM|{it['item_id']}"))
 
-    kb.add(types.InlineKeyboardButton("💳 THÔNG TIN THANH TOÁN", callback_data="PAY"))
-    kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
+    kb.add(types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"))
+    kb.add(types.InlineKeyboardButton("⏪ Quay lại menu", callback_data="BACK_MAIN"))
     return kb
 
-def kb_item(item_id: str):
+def kb_item(item_id: str, buy_url: str):
     kb = types.InlineKeyboardMarkup(row_width=1)
-    kb.add(types.InlineKeyboardButton("✅ MUA NGAY", callback_data=f"BUY|{item_id}"))
-    kb.add(types.InlineKeyboardButton("💳 THÔNG TIN THANH TOÁN", callback_data="PAY"))
-    kb.add(types.InlineKeyboardButton("📩 NHẮN ADMIN", url=admin_url()))
-    kb.add(types.InlineKeyboardButton("⏪ Quay lại Danh mục", callback_data=f"BACKCAT|{item_id}"))
-    return kb
-
-def kb_buy(item_id: str):
-    kb = types.InlineKeyboardMarkup(row_width=1)
-    kb.add(types.InlineKeyboardButton("📩 NHẮN ADMIN NGAY", url=admin_url()))
-    kb.add(types.InlineKeyboardButton("💳 THÔNG TIN THANH TOÁN", callback_data="PAY"))
-    kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
+    # MUA NGAY: mở chat admin + text có sẵn
+    kb.add(types.InlineKeyboardButton("✅ MUA NGAY (soạn sẵn)", url=buy_url))
+    kb.add(types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"))
+    kb.add(types.InlineKeyboardButton("📩 Nhắn Admin", url=admin_url()))
+    kb.add(types.InlineKeyboardButton("⏪ Quay lại danh mục", callback_data=f"BACKCAT|{item_id}"))
     return kb
 
 def kb_payment():
     kb = types.InlineKeyboardMarkup(row_width=1)
-    kb.add(types.InlineKeyboardButton("📩 GỬI BILL CHO ADMIN", url=admin_url()))
-    kb.add(types.InlineKeyboardButton("⏪ Quay lại Menu", callback_data="BACK_MAIN"))
+    kb.add(types.InlineKeyboardButton("📩 Gửi bill cho Admin", url=admin_url()))
+    kb.add(types.InlineKeyboardButton("⏪ Quay lại menu", callback_data="BACK_MAIN"))
     return kb
 
 # =========================
-# Text blocks
+# Text
 # =========================
 def text_start():
     return (
         f"👋 **Chào mừng bạn đến với {SHOP_NAME}**\n\n"
-        "✅ Giá rõ ràng – hỗ trợ nhanh – bàn giao gọn\n"
-        "⚡ Chọn danh mục → chọn sản phẩm → nhắn admin theo mẫu\n\n"
-        "👉 Chọn danh mục bạn cần bên dưới 👇"
+        "✅ Bảng giá rõ ràng – hỗ trợ nhanh – xử lý gọn\n"
+        "👉 Chọn danh mục bên dưới 👇"
     )
 
 def text_payment():
@@ -430,8 +447,7 @@ def text_payment():
         f"👤 **Chủ TK:** {ACCOUNT_NAME}\n"
         f"🔢 **STK:** {ACCOUNT_NO}\n\n"
         "✅ **NỘI DUNG CHUYỂN KHOẢN (BẮT BUỘC):**\n"
-        "`@username + TÊN SẢN PHẨM`\n"
-        "Ví dụ: `@abc MB BANK` / `@abc TÊN MIỀN` / `@abc OTP` / `@abc TELE CƠ BẢN`\n\n"
+        "`@username + TÊN SẢN PHẨM`\n\n"
         "📌 Chuyển xong, chụp bill gửi admin để xác nhận nhanh."
     )
 
@@ -439,40 +455,23 @@ def category_message(cat_id: str):
     cat = CAT_BY_ID.get(cat_id)
     if not cat:
         return "❌ Danh mục không tồn tại."
-    base = f"**{cat['title']}**\n\n{cat.get('desc','')}".strip()
-    if cat.get("warranty"):
-        base += "\n\n" + cat["warranty"]
-    return base
+    return f"**{cat['title']}**\n\n{cat['desc']}"
 
 def item_message(item_id: str):
     found = ITEM_BY_ID.get(item_id)
     if not found:
         return "❌ Sản phẩm không tồn tại."
     _, it = found
-    return f"✅ **{it['name']}**\n💰 Giá: **{it['price']}**\n\n{it['detail']}"
+    return f"✅ **{it['name']}**\n💰 **Giá:** **{it['price']}**\n\n{it['detail']}"
 
-def buy_message(item_id: str, username: str):
-    found = ITEM_BY_ID.get(item_id)
-    if not found:
-        return "❌ Sản phẩm không tồn tại."
-    _, it = found
-    u = f"@{username}" if username else "@username"
-    template = it["buy_template"].format(u=u)
-    return (
-        "✅ Để mua hàng, bạn vui lòng **copy mẫu** và gửi admin 👇\n\n"
-        "**📋 MẪU NHẮN ADMIN (COPY):**\n"
-        f"`{template}`\n\n"
-        "📌 Admin sẽ xác nhận và bàn giao sau khi thanh toán."
-    )
-
-def img_key_for_category(cat_id: str) -> str:
-    return f"CAT_{cat_id}"
-
-def img_key_for_item(item_id: str) -> str:
-    return f"ITEM_{item_id}"
+def build_buy_text(from_user, group: str, product: str, price: str, require_hint: str):
+    # cú pháp theo yêu cầu user
+    # MUA | [NHÓM] | [SẢN PHẨM] | SL: [x] |  GIÁ | Yêu cầu: [...]
+    u = user_tag(from_user)
+    return f"MUA | {group} | {product} | SL: 1 | {price} | Yêu cầu: {require_hint} | User: {u}"
 
 # =========================
-# Commands
+# Commands: /start /getid /setimg /listkeys
 # =========================
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
@@ -482,23 +481,20 @@ def cmd_start(message):
 def cmd_getid(message):
     bot.send_message(
         message.chat.id,
-        "📌 **/getid**: Gửi **1 ảnh** vào đây, bot sẽ trả về `file_id`.\n\n"
-        "Nếu bạn là admin muốn gắn ảnh cho từng màn:\n"
-        "- `/setimg START` (banner)\n"
-        "- `/setimg PAYMENT` (màn thanh toán)\n"
-        "- `/setimg CAT_<DANH_MỤC>` (ví dụ: `CAT_TELE`)\n"
-        "- `/setimg ITEM_<ID>` (ví dụ: `ITEM_MB_13K`)\n\n"
-        "Xem danh sách KEY đầy đủ bằng lệnh: `/listkeys`",
-        parse_mode="Markdown"
+        "📌 **/getid**: Gửi **1 ảnh** vào đây, bot sẽ trả `file_id`.\n\n"
+        "Admin gắn ảnh theo KEY bằng:\n"
+        "`/setimg KEY`\n"
+        "Xem KEY: `/listkeys`",
+        parse_mode="Markdown",
     )
 
 @bot.message_handler(commands=["listkeys"])
 def cmd_listkeys(message):
     keys = ["START", "PAYMENT"]
     for c in CATALOG:
-        keys.append(img_key_for_category(c["cat_id"]))
+        keys.append(f"CAT_{c['cat_id']}")
         for it in c.get("items", []):
-            keys.append(img_key_for_item(it["item_id"]))
+            keys.append(f"ITEM_{it['item_id']}")
     text = "🗂️ **Danh sách KEY ảnh có thể gắn:**\n\n" + "\n".join([f"- `{k}`" for k in keys])
     safe_send_markdown(message.chat.id, text)
 
@@ -523,7 +519,7 @@ def cmd_setimg(message):
 def on_photo(message):
     file_id = message.photo[-1].file_id
 
-    # luôn trả file_id cho người gửi
+    # luôn trả file_id
     bot.reply_to(message, f"✅ file_id:\n`{file_id}`", parse_mode="Markdown")
 
     # nếu admin đang setimg
@@ -554,24 +550,31 @@ def on_callback(call):
         if data.startswith("CAT|"):
             cat_id = data.split("|", 1)[1]
             text = category_message(cat_id)
-            img_key = img_key_for_category(cat_id)
+            img_key = f"CAT_{cat_id}"
             send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_category(cat_id))
-
-            # bonus: nếu là WEB thì gửi thêm mẫu nhắn admin
-            if cat_id == "WEB":
-                u = f"@{call.from_user.username}" if call.from_user.username else "@username"
-                safe_send_markdown(
-                    chat_id,
-                    "**📋 MẪU NHẮN ADMIN (COPY):**\n"
-                    f"`TƯ VẤN WEBSITE | Loại web: ... | Mục tiêu: ... | Tham khảo: ... | Telegram: {u}`"
-                )
             return
 
         if data.startswith("ITEM|"):
             item_id = data.split("|", 1)[1]
+            found = ITEM_BY_ID.get(item_id)
+            if not found:
+                bot.send_message(chat_id, "❌ Sản phẩm không tồn tại.")
+                return
+            _, it = found
+
             text = item_message(item_id)
-            img_key = img_key_for_item(item_id)
-            send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_item(item_id))
+
+            buy_text = build_buy_text(
+                call.from_user,
+                group=it["group"],
+                product=it["name"],
+                price=it["price"],
+                require_hint=it.get("require_hint", "...")
+            )
+            buy_url = build_prefilled_admin_link(buy_text)
+
+            img_key = f"ITEM_{item_id}"
+            send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_item(item_id, buy_url))
             return
 
         if data.startswith("BACKCAT|"):
@@ -582,23 +585,15 @@ def on_callback(call):
                 return
             cat_id, _ = found
             text = category_message(cat_id)
-            img_key = img_key_for_category(cat_id)
+            img_key = f"CAT_{cat_id}"
             send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_category(cat_id))
-            return
-
-        if data.startswith("BUY|"):
-            item_id = data.split("|", 1)[1]
-            username = call.from_user.username or ""
-            text = buy_message(item_id, username)
-            img_key = img_key_for_item(item_id)  # reuse item image
-            send_with_optional_photo(chat_id, img_key, text, reply_markup=kb_buy(item_id))
             return
 
         bot.send_message(chat_id, "❓ Không hiểu thao tác. Gõ /start để bắt đầu lại.")
 
     except Exception as e:
         try:
-            bot.send_message(call.message.chat.id, f"⚠️ Có lỗi nhỏ xảy ra. Vui lòng thử lại.\n\nChi tiết: {e}")
+            bot.send_message(call.message.chat.id, f"⚠️ Có lỗi nhỏ xảy ra.\nChi tiết: {e}")
         except Exception:
             pass
 
