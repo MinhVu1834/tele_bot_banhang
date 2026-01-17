@@ -136,7 +136,7 @@ CATALOG = [
             {
                 "item_id": "TELE_CLONE",
                 "group": "TELE",
-                "name": "Tài khoản Telegram cơ bản",
+                "name": "Tài khoản Telegram Clone",
                 "price": "25.000đ",
                 "detail": "🐙 **Tài khoản Telegram cơ bản**\n💰 Giá: **25.000đ**\n📌 Hỗ trợ đăng nhập ban đầu (theo điều kiện)",
                 "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
@@ -144,7 +144,7 @@ CATALOG = [
             {
                 "item_id": "TELE_VIP",
                 "group": "TELE",
-                "name": "Tài khoản Telegram tiện ích nâng cao",
+                "name": "Tài khoản tele có sẵn sao VIP",
                 "price": "200.000đ",
                 "detail": "🐙 **Tài khoản Telegram tiện ích nâng cao**\n💰 Giá: **200.000đ**\n📌 Phù hợp nhu cầu sử dụng nâng cao",
                 "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
@@ -152,7 +152,7 @@ CATALOG = [
             {
                 "item_id": "TELE_PACK",
                 "group": "TELE",
-                "name": "Gói số điện thoại đăng ký (gói 50)",
+                "name": " Telegram cào 50 số",
                 "price": "80.000đ",
                 "detail": "🐙 **Gói số điện thoại đăng ký**\n💰 Giá: **80.000đ**\n📌 Hỗ trợ theo điều kiện gói\n🎁 Mua số lượng có ưu đãi (tuỳ thời điểm)",
                 "require_hint": "Yêu cầu: SL | Mục đích sử dụng"
@@ -160,15 +160,15 @@ CATALOG = [
             {
                 "item_id": "TELE_UPSTAR",
                 "group": "TELE",
-                "name": "Nâng cấp Telegram (bảng gói)",
+                "name": "Nâng sao Telegram theo tháng",
                 "price": "Xem chi tiết",
                 "detail": (
-                    "🤩 **NÂNG CẤP TELEGRAM**\n\n"
+                    "**🐙 NÂNG CẤP TELEGRAM**\n\n"
                     "✅ 1 tháng: **125.000đ**\n"
                     "✅ 3 tháng: **380.000đ**\n"
                     "✅ 6 tháng: **550.000đ**\n"
                     "✅ 1 năm: **850.000đ**\n\n"
-                    "📌 Hỗ trợ theo thời hạn gói"
+                    "📌 Bảo hành số ngày theo gói nâng cấp, không bảo hành tài khoản  bị đóng băng"
                 ),
                 "require_hint": "Yêu cầu: gói (1m/3m/6m/1y)"
             },
@@ -188,6 +188,24 @@ CATALOG = [
                 ),
                 "require_hint": "Yêu cầu: size nhóm/kênh"
             },
+            {
+                "item_id": "TELE_GROUP",
+                "group": "TELE",
+                "name": "Mem online ngày đêm trong nhóm, tăng độ uy tín cho nhóm",
+                "price": "Xem chi tiết",
+                "detail": (
+                    "🔥 ** MEM ONLINE**\n\n"
+                    "📱 500 Mem online : **400.000đ**\n"
+                    "📱 1K Mem online : **800.000đ**\n"
+                    "📱 2K Mem online : **1.500.000đ**\n"
+                    "📱 5K Mem online : **4.000.000đ**\n"
+                    "📱 10K Mem online : **7.500.000đ**\n\n"
+                    "🎁 THỜI HẠN 30 NGÀY , BẢO HÀNH KHI TUỘT MEM ONLINE\n"
+                    "⚠️ CUNG CẤP NHÓM CÓ SỐ LƯỢNG MEM THEO YÊU CẦU. BÀN GIAO BẰNG CÁCH CHUYỂN QUYỀN CHỦ SỞ HỮU NHÓM - CÓ HỖ TRỢ CẦM CHỦ SỞ HỮU."
+                ),
+                "require_hint": "Yêu cầu: size nhóm/kênh"
+            },
+            
         ],
         "img_key": "CAT_TELE",
     },
@@ -195,88 +213,88 @@ CATALOG = [
     # 2) FACEBOOK
     {
         "cat_id": "FB",
-        "title": "📘 FACEBOOK",
-        "desc": "📘 **FACEBOOK – Danh mục sản phẩm**\n👉 Chọn mục bên dưới 👇",
+        "title": "📘 VIA - PAGE FACEBOOK",
+        "desc": "📘 **PAGE CỔ KHÁNG & LIVESTREAM**\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "FB_ACTIVE",
                 "group": "FACEBOOK",
-                "name": "Tài khoản hoạt động cao",
+                "name": "Chuyên spam ngon, không bảo hành",
                 "price": "150.000đ",
-                "detail": "🟢 **Tài khoản hoạt động cao**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
+                "detail": "🟢 **Chuyên spam ngon, không bảo hành**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "FB_PAGE_MANAGER",
                 "group": "FACEBOOK",
-                "name": "Tài khoản quản lý Page",
+                "name": "VIA NẮM PAGE - KHÔNG DÍNH WHATSSAP",
                 "price": "250.000đ",
-                "detail": "🟢 **Tài khoản quản lý Page**\n💰 Giá: **250.000đ**\n📌 Hỗ trợ theo điều kiện gói",
+                "detail": "🟢 **KHÔNG NÊN THAY TÊN ĐỔI ẢNH VÌ ĐÃ ĐC XMDT - ĐỔI ĐỂ DIE ACC KHÔNG BH - BH NGÂM 24 TIẾNG**\n💰 Giá: **250.000đ**\n📌 Hỗ trợ theo điều kiện gói",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "FB_OLD",
                 "group": "FACEBOOK",
-                "name": "Tài khoản lâu năm 2019–2024",
+                "name": "CỔ LÂU NĂM CÓ BÀI ĐĂNG",
                 "price": "450.000đ – 1.500.000đ",
-                "detail": "🟢 **Tài khoản lâu năm (2019–2024)**\n💰 Giá: **450.000đ – 1.500.000đ**\n📌 Có lựa chọn theo nhu cầu",
+                "detail": "🟢 **THÍCH HỢP XÂY DỰNG NHÂN VẬT : TỪ 2019 ~ 2024 CÓ BÀI ĐĂNG ĐỂ CHỈNH SỬA : 450 ~ 1M5 ( CÓ ID CHECK LỰA )**\n💰 Giá: **450.000đ – 1.500.000đ**\n📌 Có lựa chọn theo nhu cầu",
                 "require_hint": "Yêu cầu: năm/tiêu chí lựa chọn"
             },
             {
                 "item_id": "FB_VERIFY",
                 "group": "FACEBOOK",
-                "name": "Tài khoản xác minh nâng cao",
+                "name": "FB TÍCH XANH 500K",
                 "price": "500.000đ (duy trì 200k/tháng)",
-                "detail": "🟢 **Xác minh nâng cao**\n💰 Giá: **500.000đ**\n📌 Duy trì: **200.000đ/tháng**",
+                "detail": "🟢 **PHÍ DUY TRÌ TÍCH 200/THÁNG**\n💰 Giá: **500.000đ**\n📌 Duy trì: **200.000đ/tháng**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             # PAGE FB (gộp chung trong mục FACEBOOK để khách dễ bấm)
             {
                 "item_id": "PAGE_LIVE",
                 "group": "FACEBOOK",
-                "name": "Page livestream + quảng bá",
+                "name": "LIVESTREAM 1K FLOW",
                 "price": "750.000đ",
-                "detail": "📄 **Page livestream + quảng bá**\n💰 Giá: **750.000đ**\n📌 Bàn giao quyền quản trị theo quy trình",
+                "detail": "📄 **CÓ TÍNH NĂNG QC LIVESTREAM**\n💰 Giá: **750.000đ**\n📌 Bàn giao quyền quản trị theo quy trình",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "PAGE_VERIFY",
                 "group": "FACEBOOK",
-                "name": "Page xác minh nâng cao",
+                "name": "PAGE TÍCH XANH",
                 "price": "1.500.000đ",
-                "detail": "📄 **Page xác minh nâng cao**\n💰 Giá: **1.500.000đ**",
+                "detail": "📄 **PAGE TÍCH XANH**\n💰 Giá: **1.500.000đ**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "PAGE_BASIC",
                 "group": "FACEBOOK",
-                "name": "Page cơ bản hoạt động ổn định",
+                "name": "CỔ KHÁNG",
                 "price": "150.000đ",
-                "detail": "📄 **Page cơ bản**\n💰 Giá: **150.000đ**",
+                "detail": "📄 **CỔ KHÁNG**\n💰 Giá: **150.000đ**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "PAGE_1K",
                 "group": "FACEBOOK",
-                "name": "Page có theo dõi ~1K",
+                "name": "CỐ KHÁNG 1K FLOW",
                 "price": "200.000đ",
-                "detail": "📄 **Page ~1K theo dõi**\n💰 Giá: **200.000đ**",
+                "detail": "📄 **CỐ KHÁNG 1K FLOW**\n💰 Giá: **200.000đ**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "PAGE_5K",
                 "group": "FACEBOOK",
-                "name": "Page có theo dõi ~5K",
+                "name": "CỐ KHÁNG 5K FLOW",
                 "price": "450.000đ",
-                "detail": "📄 **Page ~5K theo dõi**\n💰 Giá: **450.000đ**",
+                "detail": "📄 **CỐ KHÁNG 5K FLOW**\n💰 Giá: **450.000đ**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
             {
                 "item_id": "PAGE_10K",
                 "group": "FACEBOOK",
-                "name": "Page có theo dõi ~10K",
+                "name": "CỐ KHÁNG 10K FLOW",
                 "price": "750.000đ",
-                "detail": "📄 **Page ~10K theo dõi**\n💰 Giá: **750.000đ**",
+                "detail": "📄 **CỐ KHÁNG 10K FLOW**\n💰 Giá: **750.000đ**",
                 "require_hint": "Yêu cầu: SL/ghi chú"
             },
         ],
@@ -287,7 +305,7 @@ CATALOG = [
     {
         "cat_id": "WEB",
         "title": "🖥️ LÀM WEB",
-        "desc": "🖥️ **LÀM WEBSITE**\n💬 **Giá:** thương lượng theo nhu cầu\n👉 Chọn mục bên dưới 👇",
+        "desc": "🖥️ **LÀM WEBSITE THEO YÊU CẦU **\n💬 ** WEB vòng quay may mắn : mẫu https://u888-vongquaymayman.online/\n💬 **Giá:** thương lượng theo nhu cầu\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "WEB_QUOTE",
@@ -313,7 +331,7 @@ CATALOG = [
         "cat_id": "DOMAIN",
         "title": "🌐 TÊN MIỀN",
         "desc": (
-            "🌐 **TÊN MIỀN – 370K / 1 domain**\n"
+            "🌐 **Giá – 370K / 1 domain**\n"
             "✅ Bảo hành suốt thời gian sử dụng\n"
             "✅ Đổi hậu đài ~ 3 phút\n"
             "👉 Chọn mục bên dưới 👇"
@@ -325,7 +343,6 @@ CATALOG = [
                 "name": "Tên miền đồng giá",
                 "price": "370.000đ",
                 "detail": (
-                    "🌐 **Tên miền đồng giá 370K**\n\n"
                     "✅ Bảo hành suốt thời gian sử dụng\n"
                     "✅ Đổi hậu đài ~ 3 phút\n\n"
                     "📌 Khi mua, ghi rõ **đuôi** (.com/.net/...) và **keyword**."
@@ -340,14 +357,14 @@ CATALOG = [
     {
         "cat_id": "MB",
         "title": "🏦 STK MB BANK",
-        "desc": "🏦 **TK MB Bank**\n💰 13K / 1 TK\n👉 Chọn mục bên dưới 👇",
+        "desc": "🏦 **Mua tk MB Bank để đăng ký tài khoản game**\n💰 13K / 1 TK\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "MB_13K",
                 "group": "MB BANK",
                 "name": "TK MB Bank",
                 "price": "13.000đ",
-                "detail": "🏦 **TK MB Bank**\n💰 Giá: **13.000đ / 1 TK**\n📌 Dùng theo nhu cầu tạo tài khoản game",
+                "detail": "🏦 **Bạn cần có tài khoản MB Bank để admin tạo thêm tài khoản MB mới cho bạn, hoặc không thì khi chơi phải rút tiền về tk của ad**\n💰 Giá: **13.000đ / 1 TK**\n📌 Dùng theo nhu cầu tạo tài khoản game lấy nạp đầu, đánh đối lấy chỉ tiêu,...",
                 "require_hint": "Yêu cầu: SL"
             },
         ],
@@ -358,7 +375,7 @@ CATALOG = [
     {
         "cat_id": "OTP",
         "title": "📲 OTP SĐT",
-        "desc": "📲 **OTP SĐT đăng ký game**\n💰 7K / 1 OTP\n👉 Chọn mục bên dưới 👇",
+        "desc": "📲 **Ad gửi sdt nhận được OTP**\n💰 7K / 1 OTP\n👉 Chọn mục bên dưới 👇",
         "items": [
             {
                 "item_id": "OTP_7K",
