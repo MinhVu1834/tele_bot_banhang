@@ -1,6 +1,5 @@
 import os
 import sqlite3
-import threading
 import time
 from datetime import datetime
 from urllib.parse import quote
@@ -22,7 +21,6 @@ BANK_NAME = os.getenv("BANK_NAME", "VCB").strip()
 ACCOUNT_NAME = os.getenv("ACCOUNT_NAME", "A HI HI").strip()
 ACCOUNT_NO = os.getenv("ACCOUNT_NO", "0311000742866").strip()
 
-PORT = int(os.getenv("PORT", "10000"))
 DB_PATH = os.getenv("DB_PATH", "data.db")
 
 if not BOT_TOKEN:
@@ -39,6 +37,7 @@ def db_connect():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def init_db():
     conn = db_connect()
     cur = conn.cursor()
@@ -54,6 +53,7 @@ def init_db():
     conn.commit()
     conn.close()
 
+
 def set_image(key: str, file_id: str):
     conn = db_connect()
     cur = conn.cursor()
@@ -68,6 +68,7 @@ def set_image(key: str, file_id: str):
     conn.commit()
     conn.close()
 
+
 def get_image(key: str):
     conn = db_connect()
     cur = conn.cursor()
@@ -76,14 +77,20 @@ def get_image(key: str):
     conn.close()
     return row["file_id"] if row else None
 
+
+# Init DB at import time (works with gunicorn)
+init_db()
+
 # =========================
 # Helpers
 # =========================
 def admin_username_clean() -> str:
     return ADMIN_USERNAME.lstrip("@")
 
+
 def admin_url() -> str:
     return f"https://t.me/{admin_username_clean()}"
+
 
 def is_admin(user) -> bool:
     if ADMIN_CHAT_ID and user.id == ADMIN_CHAT_ID:
@@ -92,12 +99,14 @@ def is_admin(user) -> bool:
     u = (user.username or "").lower()
     return u == admin_u
 
+
 def send_with_optional_photo(chat_id: int, img_key: str, caption: str, reply_markup=None):
     file_id = get_image(img_key)
     if file_id:
         bot.send_photo(chat_id, file_id, caption=caption, parse_mode="Markdown", reply_markup=reply_markup)
     else:
         bot.send_message(chat_id, caption, parse_mode="Markdown", reply_markup=reply_markup)
+
 
 def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
     # message limit ~4096; keep margin
@@ -115,19 +124,20 @@ def safe_send_markdown(chat_id: int, text: str, reply_markup=None):
     if buf:
         bot.send_message(chat_id, buf, parse_mode="Markdown", reply_markup=reply_markup)
 
+
 def build_prefilled_admin_link(text: str) -> str:
     # Opens admin chat with prefilled message
     return f"https://t.me/{admin_username_clean()}?text={quote(text)}"
 
+
 def user_tag(from_user) -> str:
     return f"@{from_user.username}" if from_user.username else "@username"
+
 
 # =========================
 # Catalog (menu 6 mục, bên trong có sản phẩm nhỏ)
 # =========================
-# Lưu ý: Đây là khung catalog “marketing”, bạn chỉnh text/giá thoải mái.
 CATALOG = [
-    # 1) TELE
     {
         "cat_id": "TELE",
         "title": "📱 TELE",
@@ -139,7 +149,7 @@ CATALOG = [
                 "name": "Tài khoản Telegram Clone",
                 "price": "25.000đ",
                 "detail": "🐙 **Tài khoản Telegram cơ bản**\n💰 Giá: **25.000đ**\n📌 Hỗ trợ đăng nhập ban đầu (theo điều kiện)",
-                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
+                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)",
             },
             {
                 "item_id": "TELE_VIP",
@@ -147,7 +157,7 @@ CATALOG = [
                 "name": "Tài khoản tele có sẵn sao VIP",
                 "price": "200.000đ",
                 "detail": "🐙 **Tài khoản Telegram tiện ích nâng cao**\n💰 Giá: **200.000đ**\n📌 Phù hợp nhu cầu sử dụng nâng cao",
-                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)"
+                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)",
             },
             {
                 "item_id": "TELE_PACK",
@@ -155,7 +165,7 @@ CATALOG = [
                 "name": " Telegram cào 50 số",
                 "price": "80.000đ",
                 "detail": "🐙 **Gói số điện thoại đăng ký**\n💰 Giá: **80.000đ**\n📌 Hỗ trợ theo điều kiện gói\n🎁 Mua số lượng có ưu đãi (tuỳ thời điểm)",
-                "require_hint": "Yêu cầu: SL | Mục đích sử dụng"
+                "require_hint": "Yêu cầu: SL | Mục đích sử dụng",
             },
             {
                 "item_id": "TELE_UPSTAR",
@@ -170,7 +180,7 @@ CATALOG = [
                     "✅ 1 năm: **850.000đ**\n\n"
                     "📌 Bảo hành số ngày theo gói nâng cấp, không bảo hành tài khoản  bị đóng băng"
                 ),
-                "require_hint": "Yêu cầu: gói (1m/3m/6m/1y)"
+                "require_hint": "Yêu cầu: gói (1m/3m/6m/1y)",
             },
             {
                 "item_id": "TELE_GROUP",
@@ -186,10 +196,10 @@ CATALOG = [
                     "🎁 Mua 8 tặng 1 (cùng loại)\n"
                     "📌 Bàn giao quyền sở hữu theo quy trình"
                 ),
-                "require_hint": "Yêu cầu: size nhóm/kênh"
+                "require_hint": "Yêu cầu: size nhóm/kênh",
             },
             {
-                "item_id": "TELE_GROUP",
+                "item_id": "TELE_GROUP_ONLINE",
                 "group": "TELE",
                 "name": "Mem online ngày đêm trong nhóm, tăng độ uy tín cho nhóm",
                 "price": "Xem chi tiết",
@@ -203,14 +213,11 @@ CATALOG = [
                     "🎁 THỜI HẠN 30 NGÀY , BẢO HÀNH KHI TUỘT MEM ONLINE\n"
                     "⚠️ CUNG CẤP NHÓM CÓ SỐ LƯỢNG MEM THEO YÊU CẦU. BÀN GIAO BẰNG CÁCH CHUYỂN QUYỀN CHỦ SỞ HỮU NHÓM - CÓ HỖ TRỢ CẦM CHỦ SỞ HỮU."
                 ),
-                "require_hint": "Yêu cầu: size nhóm/kênh"
+                "require_hint": "Yêu cầu: size nhóm/kênh",
             },
-            
         ],
         "img_key": "CAT_TELE",
     },
-
-    # 2) FACEBOOK
     {
         "cat_id": "FB",
         "title": "📘 VIA - PAGE FACEBOOK",
@@ -222,7 +229,7 @@ CATALOG = [
                 "name": "Chuyên spam ngon, không bảo hành",
                 "price": "150.000đ",
                 "detail": "🟢 **Chuyên spam ngon, không bảo hành**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "FB_PAGE_MANAGER",
@@ -230,7 +237,7 @@ CATALOG = [
                 "name": "VIA NẮM PAGE - KHÔNG DÍNH WHATSSAP",
                 "price": "250.000đ",
                 "detail": "🟢 **KHÔNG NÊN THAY TÊN ĐỔI ẢNH VÌ ĐÃ ĐC XMDT - ĐỔI ĐỂ DIE ACC KHÔNG BH - BH NGÂM 24 TIẾNG**\n💰 Giá: **250.000đ**\n📌 Hỗ trợ theo điều kiện gói",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "FB_OLD",
@@ -238,7 +245,7 @@ CATALOG = [
                 "name": "CỔ LÂU NĂM CÓ BÀI ĐĂNG",
                 "price": "450.000đ – 1.500.000đ",
                 "detail": "🟢 **THÍCH HỢP XÂY DỰNG NHÂN VẬT : TỪ 2019 ~ 2024 CÓ BÀI ĐĂNG ĐỂ CHỈNH SỬA : 450 ~ 1M5 ( CÓ ID CHECK LỰA )**\n💰 Giá: **450.000đ – 1.500.000đ**\n📌 Có lựa chọn theo nhu cầu",
-                "require_hint": "Yêu cầu: năm/tiêu chí lựa chọn"
+                "require_hint": "Yêu cầu: năm/tiêu chí lựa chọn",
             },
             {
                 "item_id": "FB_VERIFY",
@@ -246,16 +253,15 @@ CATALOG = [
                 "name": "FB TÍCH XANH 500K",
                 "price": "500.000đ (duy trì 200k/tháng)",
                 "detail": "🟢 **PHÍ DUY TRÌ TÍCH 200/THÁNG**\n💰 Giá: **500.000đ**\n📌 Duy trì: **200.000đ/tháng**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
-            # PAGE FB (gộp chung trong mục FACEBOOK để khách dễ bấm)
             {
                 "item_id": "PAGE_LIVE",
                 "group": "FACEBOOK",
                 "name": "LIVESTREAM 1K FLOW",
                 "price": "750.000đ",
                 "detail": "📄 **CÓ TÍNH NĂNG QC LIVESTREAM**\n💰 Giá: **750.000đ**\n📌 Bàn giao quyền quản trị theo quy trình",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "PAGE_VERIFY",
@@ -263,7 +269,7 @@ CATALOG = [
                 "name": "PAGE TÍCH XANH",
                 "price": "1.500.000đ",
                 "detail": "📄 **PAGE TÍCH XANH**\n💰 Giá: **1.500.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "PAGE_BASIC",
@@ -271,7 +277,7 @@ CATALOG = [
                 "name": "CỔ KHÁNG",
                 "price": "150.000đ",
                 "detail": "📄 **CỔ KHÁNG**\n💰 Giá: **150.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "PAGE_1K",
@@ -279,7 +285,7 @@ CATALOG = [
                 "name": "CỐ KHÁNG 1K FLOW",
                 "price": "200.000đ",
                 "detail": "📄 **CỐ KHÁNG 1K FLOW**\n💰 Giá: **200.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "PAGE_5K",
@@ -287,7 +293,7 @@ CATALOG = [
                 "name": "CỐ KHÁNG 5K FLOW",
                 "price": "450.000đ",
                 "detail": "📄 **CỐ KHÁNG 5K FLOW**\n💰 Giá: **450.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
             {
                 "item_id": "PAGE_10K",
@@ -295,13 +301,11 @@ CATALOG = [
                 "name": "CỐ KHÁNG 10K FLOW",
                 "price": "750.000đ",
                 "detail": "📄 **CỐ KHÁNG 10K FLOW**\n💰 Giá: **750.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú"
+                "require_hint": "Yêu cầu: SL/ghi chú",
             },
         ],
         "img_key": "CAT_FB",
     },
-
-    # 3) LÀM WEB
     {
         "cat_id": "WEB",
         "title": "🖥️ LÀM WEB",
@@ -320,13 +324,11 @@ CATALOG = [
                     "- Mẫu tham khảo\n"
                     "- Thời gian mong muốn\n"
                 ),
-                "require_hint": "Yêu cầu: loại web/chức năng/mẫu"
+                "require_hint": "Yêu cầu: loại web/chức năng/mẫu",
             },
         ],
         "img_key": "CAT_WEB",
     },
-
-    # 4) TÊN MIỀN
     {
         "cat_id": "DOMAIN",
         "title": "🌐 TÊN MIỀN",
@@ -347,13 +349,11 @@ CATALOG = [
                     "✅ Đổi hậu đài ~ 3 phút\n\n"
                     "📌 Khi mua, ghi rõ **đuôi** (.com/.net/...) và **keyword**."
                 ),
-                "require_hint": "Yêu cầu: đuôi/keyword"
+                "require_hint": "Yêu cầu: đuôi/keyword",
             },
         ],
         "img_key": "CAT_DOMAIN",
     },
-
-    # 5) STK MB BANK
     {
         "cat_id": "MB",
         "title": "🏦 STK MB BANK",
@@ -365,13 +365,11 @@ CATALOG = [
                 "name": "TK MB Bank",
                 "price": "13.000đ",
                 "detail": "🏦 **Bạn cần có tài khoản MB Bank để admin tạo thêm tài khoản MB mới cho bạn, hoặc không thì khi chơi phải rút tiền về tk của ad**\n💰 Giá: **13.000đ / 1 TK**\n📌 Dùng theo nhu cầu tạo tài khoản game lấy nạp đầu, đánh đối lấy chỉ tiêu,...",
-                "require_hint": "Yêu cầu: SL"
+                "require_hint": "Yêu cầu: SL",
             },
         ],
         "img_key": "CAT_MB",
     },
-
-    # 6) OTP SĐT
     {
         "cat_id": "OTP",
         "title": "📲 OTP SĐT",
@@ -383,7 +381,7 @@ CATALOG = [
                 "name": "OTP SĐT đăng ký game",
                 "price": "7.000đ",
                 "detail": "📲 **OTP SĐT đăng ký game**\n💰 Giá: **7.000đ / 1 OTP**\n📌 Khi mua, ghi rõ nền tảng/game cần OTP.",
-                "require_hint": "Yêu cầu: nền tảng/game"
+                "require_hint": "Yêu cầu: nền tảng/game",
             },
         ],
         "img_key": "CAT_OTP",
@@ -401,7 +399,6 @@ for c in CATALOG:
 # =========================
 def kb_main():
     kb = types.InlineKeyboardMarkup(row_width=2)
-    # 6 mục, 2 cột
     kb.add(
         types.InlineKeyboardButton("📱 TELE", callback_data="CAT|TELE"),
         types.InlineKeyboardButton("📘 FACEBOOK", callback_data="CAT|FB"),
@@ -410,12 +407,12 @@ def kb_main():
         types.InlineKeyboardButton("🏦 STK MB BANK", callback_data="CAT|MB"),
         types.InlineKeyboardButton("📲 OTP SĐT", callback_data="CAT|OTP"),
     )
-    # hàng phụ
     kb.add(
         types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"),
         types.InlineKeyboardButton("📩 Admin", url=admin_url()),
     )
     return kb
+
 
 def kb_category(cat_id: str):
     kb = types.InlineKeyboardMarkup(row_width=1)
@@ -432,20 +429,22 @@ def kb_category(cat_id: str):
     kb.add(types.InlineKeyboardButton("⏪ Quay lại menu", callback_data="BACK_MAIN"))
     return kb
 
+
 def kb_item(item_id: str, buy_url: str):
     kb = types.InlineKeyboardMarkup(row_width=1)
-    # MUA NGAY: mở chat admin + text có sẵn
     kb.add(types.InlineKeyboardButton("✅ MUA NGAY (soạn sẵn)", url=buy_url))
     kb.add(types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"))
     kb.add(types.InlineKeyboardButton("📩 Nhắn Admin", url=admin_url()))
     kb.add(types.InlineKeyboardButton("⏪ Quay lại danh mục", callback_data=f"BACKCAT|{item_id}"))
     return kb
 
+
 def kb_payment():
     kb = types.InlineKeyboardMarkup(row_width=1)
     kb.add(types.InlineKeyboardButton("📩 Gửi bill cho Admin", url=admin_url()))
     kb.add(types.InlineKeyboardButton("⏪ Quay lại menu", callback_data="BACK_MAIN"))
     return kb
+
 
 # =========================
 # Text
@@ -456,6 +455,7 @@ def text_start():
         "✅ Bảng giá rõ ràng – hỗ trợ nhanh – xử lý gọn\n"
         "👉 Chọn danh mục bên dưới 👇"
     )
+
 
 def text_payment():
     return (
@@ -468,11 +468,13 @@ def text_payment():
         "📌 Chuyển xong, chụp bill gửi admin để xác nhận nhanh."
     )
 
+
 def category_message(cat_id: str):
     cat = CAT_BY_ID.get(cat_id)
     if not cat:
         return "❌ Danh mục không tồn tại."
     return f"**{cat['title']}**\n\n{cat['desc']}"
+
 
 def item_message(item_id: str):
     found = ITEM_BY_ID.get(item_id)
@@ -481,18 +483,19 @@ def item_message(item_id: str):
     _, it = found
     return f"✅ **{it['name']}**\n💰 **Giá:** **{it['price']}**\n\n{it['detail']}"
 
+
 def build_buy_text(from_user, group: str, product: str, price: str, require_hint: str):
-    # cú pháp theo yêu cầu user
-    # MUA | [NHÓM] | [SẢN PHẨM] | SL: [x] |  GIÁ | Yêu cầu: [...]
     u = user_tag(from_user)
     return f"MUA | {group} | {product} | SL: 1 | {price} | Yêu cầu: {require_hint} | User: {u}"
 
+
 # =========================
-# Commands: /start /getid /setimg /listkeys
+# Commands
 # =========================
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
     send_with_optional_photo(message.chat.id, "START", text_start(), reply_markup=kb_main())
+
 
 @bot.message_handler(commands=["getid"])
 def cmd_getid(message):
@@ -505,6 +508,7 @@ def cmd_getid(message):
         parse_mode="Markdown",
     )
 
+
 @bot.message_handler(commands=["listkeys"])
 def cmd_listkeys(message):
     keys = ["START", "PAYMENT"]
@@ -515,7 +519,9 @@ def cmd_listkeys(message):
     text = "🗂️ **Danh sách KEY ảnh có thể gắn:**\n\n" + "\n".join([f"- `{k}`" for k in keys])
     safe_send_markdown(message.chat.id, text)
 
+
 admin_waiting_img_key = {}  # chat_id -> key
+
 
 @bot.message_handler(commands=["setimg"])
 def cmd_setimg(message):
@@ -532,19 +538,19 @@ def cmd_setimg(message):
     admin_waiting_img_key[message.chat.id] = key
     bot.reply_to(message, f"📷 OK. Giờ hãy gửi **ảnh** để gắn vào KEY: **{key}**.", parse_mode="Markdown")
 
+
 @bot.message_handler(content_types=["photo"])
 def on_photo(message):
     file_id = message.photo[-1].file_id
 
-    # luôn trả file_id
     bot.reply_to(message, f"✅ file_id:\n`{file_id}`", parse_mode="Markdown")
 
-    # nếu admin đang setimg
     key = admin_waiting_img_key.get(message.chat.id)
     if key and is_admin(message.from_user):
         set_image(key, file_id)
         admin_waiting_img_key.pop(message.chat.id, None)
         bot.reply_to(message, f"✅ Đã gắn ảnh cho **{key}**.", parse_mode="Markdown")
+
 
 # =========================
 # Callbacks
@@ -586,7 +592,7 @@ def on_callback(call):
                 group=it["group"],
                 product=it["name"],
                 price=it["price"],
-                require_hint=it.get("require_hint", "...")
+                require_hint=it.get("require_hint", "..."),
             )
             buy_url = build_prefilled_admin_link(buy_text)
 
@@ -614,16 +620,19 @@ def on_callback(call):
         except Exception:
             pass
 
+
 # =========================
-# Flask endpoints for UptimeRobot ping
+# Flask endpoints
 # =========================
 @server.get("/")
 def home():
     return "OK", 200
 
+
 @server.get("/health")
 def health():
     return "OK", 200
+
 
 @server.before_request
 def log_ping():
@@ -634,25 +643,16 @@ def log_ping():
             f"ua={request.headers.get('User-Agent','')}"
         )
 
-# =========================
-# Run polling in background thread
-# =========================
-def run_bot_polling_forever():
-    while True:
-        try:
-            print("[BOT] polling started")
-            bot.infinity_polling(timeout=30, long_polling_timeout=30)
-        except Exception as e:
-            print(f"[BOT] polling crashed: {e}. Restart in 5s...")
-            time.sleep(5)
 
-def main():
-    init_db()
-    t = threading.Thread(target=run_bot_polling_forever, daemon=True)
-    t.start()
-
-    print(f"[WEB] starting flask on 0.0.0.0:{PORT}")
-    server.run(host="0.0.0.0", port=PORT)
-
-if __name__ == "__main__":
-    main()
+# ✅ Telegram webhook endpoint
+@server.post("/webhook")
+def telegram_webhook():
+    try:
+        raw = request.get_data().decode("utf-8")
+        update = types.Update.de_json(raw)
+        bot.process_new_updates([update])
+        return "OK", 200
+    except Exception as e:
+        print(f"[WEBHOOK] error: {e}")
+        # vẫn trả 200 để Telegram không retry spam
+        return "OK", 200
