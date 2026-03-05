@@ -15,11 +15,11 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "@min_max1834").strip()  # @username
 ADMIN_CHAT_ID = int(os.getenv("ADMIN_CHAT_ID", "0"))  # optional - recommended
-SHOP_NAME = os.getenv("SHOP_NAME", "SHOP X").strip()
+SHOP_NAME = os.getenv("SHOP_NAME", "VUSMILE").strip()
 
 BANK_NAME = os.getenv("BANK_NAME", "VCB").strip()
-ACCOUNT_NAME = os.getenv("ACCOUNT_NAME", "A HI HI").strip()
-ACCOUNT_NO = os.getenv("ACCOUNT_NO", "0311000742866").strip()
+ACCOUNT_NAME = os.getenv("ACCOUNT_NAME", "NGUYEN THI HUYEN").strip()
+ACCOUNT_NO = os.getenv("ACCOUNT_NO", "1020905207").strip()
 
 DB_PATH = os.getenv("DB_PATH", "data.db")
 
@@ -146,26 +146,26 @@ CATALOG = [
             {
                 "item_id": "TELE_CLONE",
                 "group": "TELE",
-                "name": "Tài khoản Telegram Clone",
-                "price": "25.000đ",
-                "detail": "🐙 **Tài khoản Telegram cơ bản**\n💰 Giá: **25.000đ**\n📌 Hỗ trợ đăng nhập ban đầu (theo điều kiện)",
-                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)",
+                "name": "Tài khoản Telegram Spam nhóm",
+                "price": "35.000đ",
+                "detail": "🐙 **Tài khoản Telegram cơ bản**\n💰 Giá: **35.000đ**\n📌 Hỗ trợ đăng nhập ban đầu\n🎁 bảo hành 1 đổi 1 nếu tài khoản bị đóng băng",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "TELE_VIP",
                 "group": "TELE",
-                "name": "Tài khoản tele có sẵn sao VIP",
+                "name": "Tài khoản tele có sẵn sao 1 tháng",
                 "price": "200.000đ",
-                "detail": "🐙 **Tài khoản Telegram tiện ích nâng cao**\n💰 Giá: **200.000đ**\n📌 Phù hợp nhu cầu sử dụng nâng cao",
-                "require_hint": "Yêu cầu: SL/ghi chú (nếu có)",
+                "detail": "🐙 **Tài khoản Telegram tiện ích nâng cao**\n💰 Giá: **200.000đ**\n📌 Hỗ trợ đăng nhập ban đầu\n🎁 bảo hành 1 đổi 1 nếu tài khoản bị đóng băng",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "TELE_PACK",
                 "group": "TELE",
                 "name": " Telegram cào 50 số",
                 "price": "80.000đ",
-                "detail": "🐙 **Gói số điện thoại đăng ký**\n💰 Giá: **80.000đ**\n📌 Hỗ trợ theo điều kiện gói\n🎁 Mua số lượng có ưu đãi (tuỳ thời điểm)",
-                "require_hint": "Yêu cầu: SL | Mục đích sử dụng",
+                "detail": "🐙 **Gói số điện thoại đăng ký**\n💰 Giá: **80.000đ**\n📌 Hỗ trợ đăng nhập ban đầu\n🎁 bảo hành 1 đổi 1 nếu tài khoản bị đóng băng",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "TELE_UPSTAR",
@@ -180,15 +180,15 @@ CATALOG = [
                     "✅ 1 năm: **850.000đ**\n\n"
                     "📌 Bảo hành số ngày theo gói nâng cấp, không bảo hành tài khoản  bị đóng băng"
                 ),
-                "require_hint": "Yêu cầu: gói (1m/3m/6m/1y)",
+                "require_hint": "Ghi chú: gói ... tháng (1m/3m/6m/1y), Số lượng :  ",
             },
             {
                 "item_id": "TELE_GROUP",
                 "group": "TELE",
-                "name": "Nhóm/Kênh Telegram (bảng size)",
+                "name": " Kênh Telegram (bảng size)",
                 "price": "Xem chi tiết",
                 "detail": (
-                    "👥 **NHÓM/KÊNH TELEGRAM**\n\n"
+                    "👥 ** KÊNH TELEGRAM**\n\n"
                     "📱 1K7–2K mem: **150.000đ**\n"
                     "📱 5K mem: **400.000đ**\n"
                     "📱 10K mem: **800.000đ**\n"
@@ -196,7 +196,7 @@ CATALOG = [
                     "🎁 Mua 8 tặng 1 (cùng loại)\n"
                     "📌 Bàn giao quyền sở hữu theo quy trình"
                 ),
-                "require_hint": "Yêu cầu: size nhóm/kênh",
+                "require_hint": "Ghi chú: size kênh, Số lượng :  ",
             },
             {
                 "item_id": "TELE_GROUP_ONLINE",
@@ -213,10 +213,42 @@ CATALOG = [
                     "🎁 THỜI HẠN 30 NGÀY , BẢO HÀNH KHI TUỘT MEM ONLINE\n"
                     "⚠️ CUNG CẤP NHÓM CÓ SỐ LƯỢNG MEM THEO YÊU CẦU. BÀN GIAO BẰNG CÁCH CHUYỂN QUYỀN CHỦ SỞ HỮU NHÓM - CÓ HỖ TRỢ CẦM CHỦ SỞ HỮU."
                 ),
-                "require_hint": "Yêu cầu: size nhóm/kênh",
+                "require_hint": "Yêu cầu: size nhóm, Số lượng :  ",
             },
         ],
         "img_key": "CAT_TELE",
+    },
+    {
+        "cat_id": "TIKTOK",
+        "title": "🎵 TIKTOK",
+        "desc": "🎵 **TIKTOK – Danh mục sản phẩm**\n👉 Chọn mục bên dưới 👇",
+        "items": [
+            {
+                "item_id": "TIKTOK_WHITE",
+                "group": "TIKTOK",
+                "name": "Tiktok trắng để xây kênh (Việt - US - UK)",
+                "price": "40.000đ",
+                "detail": "🎵 **Tiktok trắng để xây kênh**\n💰 Giá: **40.000đ**\n📌 Quốc gia: **Việt - US - UK**\n📌 Phù hợp xây kênh mới",
+                "require_hint": "Yêu cầu: quốc gia | SL",
+            },
+            {
+                "item_id": "TIKTOK_BUILD",
+                "group": "TIKTOK",
+                "name": "Tiktok xây kênh 1-2K follow (Việt - US - UK)",
+                "price": "220.000đ",
+                "detail": "🎵 **Tiktok xây kênh 1K - 2K follow**\n💰 Giá: **220.000đ**\n📌 Quốc gia: **Việt - US - UK**",
+                "require_hint": "Yêu cầu: quốc gia | SL",
+            },
+            {
+                "item_id": "TIKTOK_LIVE",
+                "group": "TIKTOK",
+                "name": "Tiktok LIVE (Việt - US - UK)",
+                "price": "240.000đ",
+                "detail": "🎵 **Tài khoản Tiktok LIVE**\n💰 Giá: **240.000đ**\n📌 Quốc gia: **Việt - US - UK**\n📌 Bao log, bao back, bao hạn chế 5p, bao ngắt.",
+                "require_hint": "Yêu cầu: quốc gia | SL",
+            },
+        ],
+        "img_key": "CAT_TIKTOK",
     },
     {
         "cat_id": "FB",
@@ -226,18 +258,18 @@ CATALOG = [
             {
                 "item_id": "FB_ACTIVE",
                 "group": "FACEBOOK",
-                "name": "Chuyên spam ngon, không bảo hành",
+                "name": "Chuyên spam ngon, bao back 1 đổi 1 trong 24h",
                 "price": "150.000đ",
                 "detail": "🟢 **Chuyên spam ngon, không bảo hành**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "FB_PAGE_MANAGER",
                 "group": "FACEBOOK",
                 "name": "VIA NẮM PAGE - KHÔNG DÍNH WHATSSAP",
                 "price": "250.000đ",
-                "detail": "🟢 **KHÔNG NÊN THAY TÊN ĐỔI ẢNH VÌ ĐÃ ĐC XMDT - ĐỔI ĐỂ DIE ACC KHÔNG BH - BH NGÂM 24 TIẾNG**\n💰 Giá: **250.000đ**\n📌 Hỗ trợ theo điều kiện gói",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "detail": "🟢 **KHÔNG NÊN THAY TÊN ĐỔI ẢNH VÌ ĐÃ ĐC XMDT - ĐỔI ĐỂ DIE ACC KHÔNG BH - BH NGÂM 24 TIẾNG**\n💰 Giá: **250.000đ**\n📌 bao back 1 đổi 1 trong 24h",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "FB_OLD",
@@ -245,7 +277,7 @@ CATALOG = [
                 "name": "CỔ LÂU NĂM CÓ BÀI ĐĂNG",
                 "price": "450.000đ – 1.500.000đ",
                 "detail": "🟢 **THÍCH HỢP XÂY DỰNG NHÂN VẬT : TỪ 2019 ~ 2024 CÓ BÀI ĐĂNG ĐỂ CHỈNH SỬA : 450 ~ 1M5 ( CÓ ID CHECK LỰA )**\n💰 Giá: **450.000đ – 1.500.000đ**\n📌 Có lựa chọn theo nhu cầu",
-                "require_hint": "Yêu cầu: năm/tiêu chí lựa chọn",
+                "require_hint": "Ghi chú: năm/tiêu chí lựa chọn, Số lượng :  ",
             },
             {
                 "item_id": "FB_VERIFY",
@@ -253,7 +285,7 @@ CATALOG = [
                 "name": "FB TÍCH XANH 500K",
                 "price": "500.000đ (duy trì 200k/tháng)",
                 "detail": "🟢 **PHÍ DUY TRÌ TÍCH 200/THÁNG**\n💰 Giá: **500.000đ**\n📌 Duy trì: **200.000đ/tháng**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_LIVE",
@@ -261,7 +293,7 @@ CATALOG = [
                 "name": "LIVESTREAM 1K FLOW",
                 "price": "750.000đ",
                 "detail": "📄 **CÓ TÍNH NĂNG QC LIVESTREAM**\n💰 Giá: **750.000đ**\n📌 Bàn giao quyền quản trị theo quy trình",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_VERIFY",
@@ -269,23 +301,23 @@ CATALOG = [
                 "name": "PAGE TÍCH XANH",
                 "price": "1.500.000đ",
                 "detail": "📄 **PAGE TÍCH XANH**\n💰 Giá: **1.500.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_BASIC",
                 "group": "FACEBOOK",
-                "name": "CỔ KHÁNG",
+                "name": "PAGE TRẮNG",
                 "price": "150.000đ",
-                "detail": "📄 **CỔ KHÁNG**\n💰 Giá: **150.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "detail": "📄 **PAGE TRẮNG**\n💰 Giá: **150.000đ**\n📌 0 follow",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_1K",
                 "group": "FACEBOOK",
                 "name": "CỐ KHÁNG 1K FLOW",
-                "price": "200.000đ",
+                "price": "250.000đ",
                 "detail": "📄 **CỐ KHÁNG 1K FLOW**\n💰 Giá: **200.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_5K",
@@ -293,7 +325,7 @@ CATALOG = [
                 "name": "CỐ KHÁNG 5K FLOW",
                 "price": "450.000đ",
                 "detail": "📄 **CỐ KHÁNG 5K FLOW**\n💰 Giá: **450.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
             {
                 "item_id": "PAGE_10K",
@@ -301,7 +333,7 @@ CATALOG = [
                 "name": "CỐ KHÁNG 10K FLOW",
                 "price": "750.000đ",
                 "detail": "📄 **CỐ KHÁNG 10K FLOW**\n💰 Giá: **750.000đ**",
-                "require_hint": "Yêu cầu: SL/ghi chú",
+                "require_hint": "Ghi chú: . . ., Số lượng :  ",
             },
         ],
         "img_key": "CAT_FB",
@@ -324,7 +356,7 @@ CATALOG = [
                     "- Mẫu tham khảo\n"
                     "- Thời gian mong muốn\n"
                 ),
-                "require_hint": "Yêu cầu: loại web/chức năng/mẫu",
+                "require_hint": "Yêu cầu: loại web/chức năng/mẫu, Số lượng :  ",
             },
         ],
         "img_key": "CAT_WEB",
@@ -333,7 +365,7 @@ CATALOG = [
         "cat_id": "DOMAIN",
         "title": "🌐 TÊN MIỀN",
         "desc": (
-            "🌐 **Giá – 370K / 1 domain**\n"
+            "🌐 **Giá – 370K / 1 domain .CLICK  .PRO	.LIVE	.LOVE	.VIP    .ONLINE    .SHOP	.ORG	.STORE	.TECH	.XYZ	.FUN	**\n"
             "✅ Bảo hành suốt thời gian sử dụng\n"
             "✅ Đổi hậu đài ~ 3 phút\n"
             "👉 Chọn mục bên dưới 👇"
@@ -342,14 +374,14 @@ CATALOG = [
             {
                 "item_id": "DOMAIN_370",
                 "group": "TÊN MIỀN",
-                "name": "Tên miền đồng giá",
+                "name": "Tên miền đồng giá: .CLICK  .PRO	.LIVE	.LOVE	.VIP    .ONLINE    .SHOP	.ORG	.STORE	.TECH	.XYZ	.FUN",
                 "price": "370.000đ",
                 "detail": (
                     "✅ Bảo hành suốt thời gian sử dụng\n"
                     "✅ Đổi hậu đài ~ 3 phút\n\n"
-                    "📌 Khi mua, ghi rõ **đuôi** (.com/.net/...) và **keyword**."
+                    "📌 Khi mua, ghi rõ **đuôi** (...) và **keyword**."
                 ),
-                "require_hint": "Yêu cầu: đuôi/keyword",
+                "require_hint": "Ghi chú keyword/đuôi : ...",
             },
         ],
         "img_key": "CAT_DOMAIN",
@@ -401,6 +433,7 @@ def kb_main():
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
         types.InlineKeyboardButton("📱 TELE", callback_data="CAT|TELE"),
+        types.InlineKeyboardButton("🎵 TIKTOK", callback_data="CAT|TIKTOK"),
         types.InlineKeyboardButton("📘 FACEBOOK", callback_data="CAT|FB"),
         types.InlineKeyboardButton("🖥️ LÀM WEB", callback_data="CAT|WEB"),
         types.InlineKeyboardButton("🌐 TÊN MIỀN", callback_data="CAT|DOMAIN"),
