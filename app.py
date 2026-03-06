@@ -418,7 +418,6 @@ CATALOG = [
         ],
         "img_key": "CAT_OTP",
     },
-    ,
     {
         "cat_id": "BOT",
         "title": "🤖🧠BOT NHẬN KM NẠP ĐÀU TỰ ĐỘNG",
