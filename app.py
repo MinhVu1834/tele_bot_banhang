@@ -432,7 +432,7 @@ CATALOG = [
                 "require_hint": "Yêu cầu: SL",
             },
         ],
-        "img_key": "CAT_MB",
+        "img_key": "CAT_BOT",
     }
 ]
 
