@@ -201,7 +201,7 @@ CATALOG = [
             {
                 "item_id": "TELE_GROUP_ONLINE",
                 "group": "TELE",
-                "name": "Mem online ngày đêm trong nhóm, tăng độ uy tín cho nhóm",
+                "name": "Nhóm tele có mem online ngày đêm ",
                 "price": "Xem chi tiết",
                 "detail": (
                     "🔥 ** MEM ONLINE**\n\n"
@@ -226,7 +226,7 @@ CATALOG = [
             {
                 "item_id": "TIKTOK_WHITE",
                 "group": "TIKTOK",
-                "name": "Tiktok trắng để xây kênh (Việt - US - UK)",
+                "name": "Tiktok trắng xây kênh ",
                 "price": "40.000đ",
                 "detail": "🎵 **Tiktok trắng để xây kênh**\n💰 Giá: **40.000đ**\n📌 Quốc gia: **Việt - US - UK**\n📌 Phù hợp xây kênh mới",
                 "require_hint": "Yêu cầu: quốc gia | SL",
@@ -234,7 +234,7 @@ CATALOG = [
             {
                 "item_id": "TIKTOK_BUILD",
                 "group": "TIKTOK",
-                "name": "Tiktok xây kênh 1-2K follow (Việt - US - UK)",
+                "name": "Tiktok xây kênh 1-2K follow ",
                 "price": "220.000đ",
                 "detail": "🎵 **Tiktok xây kênh 1K - 2K follow**\n💰 Giá: **220.000đ**\n📌 Quốc gia: **Việt - US - UK**",
                 "require_hint": "Yêu cầu: quốc gia | SL",
@@ -258,7 +258,7 @@ CATALOG = [
             {
                 "item_id": "FB_ACTIVE",
                 "group": "FACEBOOK",
-                "name": "Chuyên spam ngon, bao back 1 đổi 1 trong 24h",
+                "name": "CHUYÊN SPAM NGON",
                 "price": "150.000đ",
                 "detail": "🟢 **Chuyên spam ngon, không bảo hành**\n💰 Giá: **150.000đ**\n📌 Phù hợp nhu cầu đăng bài / quản lý nội dung",
                 "require_hint": "Ghi chú: . . ., Số lượng :  ",
@@ -266,7 +266,7 @@ CATALOG = [
             {
                 "item_id": "FB_PAGE_MANAGER",
                 "group": "FACEBOOK",
-                "name": "VIA NẮM PAGE - KHÔNG DÍNH WHATSSAP",
+                "name": "VIA NẮM PAGE - TRÂU HƠN",
                 "price": "250.000đ",
                 "detail": "🟢 **KHÔNG NÊN THAY TÊN ĐỔI ẢNH VÌ ĐÃ ĐC XMDT - ĐỔI ĐỂ DIE ACC KHÔNG BH - BH NGÂM 24 TIẾNG**\n💰 Giá: **250.000đ**\n📌 bao back 1 đổi 1 trong 24h",
                 "require_hint": "Ghi chú: . . ., Số lượng :  ",
@@ -314,7 +314,7 @@ CATALOG = [
             {
                 "item_id": "PAGE_1K",
                 "group": "FACEBOOK",
-                "name": "CỐ KHÁNG 1K FLOW",
+                "name": "PAGE CỐ KHÁNG 1K FLOW",
                 "price": "250.000đ",
                 "detail": "📄 **CỐ KHÁNG 1K FLOW**\n💰 Giá: **200.000đ**",
                 "require_hint": "Ghi chú: . . ., Số lượng :  ",
@@ -322,7 +322,7 @@ CATALOG = [
             {
                 "item_id": "PAGE_5K",
                 "group": "FACEBOOK",
-                "name": "CỐ KHÁNG 5K FLOW",
+                "name": "PAGE CỐ KHÁNG 5K FLOW",
                 "price": "450.000đ",
                 "detail": "📄 **CỐ KHÁNG 5K FLOW**\n💰 Giá: **450.000đ**",
                 "require_hint": "Ghi chú: . . ., Số lượng :  ",
@@ -330,7 +330,7 @@ CATALOG = [
             {
                 "item_id": "PAGE_10K",
                 "group": "FACEBOOK",
-                "name": "CỐ KHÁNG 10K FLOW",
+                "name": "PAGE CỐ KHÁNG 10K FLOW",
                 "price": "750.000đ",
                 "detail": "📄 **CỐ KHÁNG 10K FLOW**\n💰 Giá: **750.000đ**",
                 "require_hint": "Ghi chú: . . ., Số lượng :  ",
@@ -436,9 +436,9 @@ def kb_main():
         types.InlineKeyboardButton("🎵 TIKTOK", callback_data="CAT|TIKTOK"),
         types.InlineKeyboardButton("📘 FACEBOOK", callback_data="CAT|FB"),
         types.InlineKeyboardButton("🖥️ LÀM WEB", callback_data="CAT|WEB"),
-        types.InlineKeyboardButton("🌐 TÊN MIỀN", callback_data="CAT|DOMAIN"),
-        types.InlineKeyboardButton("🏦 STK MB BANK", callback_data="CAT|MB"),
         types.InlineKeyboardButton("📲 OTP SĐT", callback_data="CAT|OTP"),
+        types.InlineKeyboardButton("🏦 STK MB BANK", callback_data="CAT|MB"),        
+        types.InlineKeyboardButton("🌐 TÊN MIỀN", callback_data="CAT|DOMAIN"),
     )
     kb.add(
         types.InlineKeyboardButton("💳 Thanh toán", callback_data="PAY"),
