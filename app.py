@@ -420,7 +420,7 @@ CATALOG = [
     },
     ,
     {
-        "cat_id": "bot",
+        "cat_id": "BOT",
         "title": "🤖🧠BOT NHẬN KM NẠP ĐÀU TỰ ĐỘNG",
         "desc": "🤖🧠 **BOT SPAM NHẬN KM NẠP ĐẦU**\n💰 400K / 1 ",
         "items": [
@@ -453,6 +453,7 @@ def kb_main():
         types.InlineKeyboardButton("🎵 TIKTOK", callback_data="CAT|TIKTOK"),
         types.InlineKeyboardButton("📘 FACEBOOK", callback_data="CAT|FB"),
         types.InlineKeyboardButton("🖥️ LÀM WEB", callback_data="CAT|WEB"),
+        types.InlineKeyboardButton("🤖🧠 BOT SPAM CHO SALE", callback_data="CAT|BOT"),
         types.InlineKeyboardButton("📲 OTP SĐT", callback_data="CAT|OTP"),
         types.InlineKeyboardButton("🏦 STK MB BANK", callback_data="CAT|MB"),        
         types.InlineKeyboardButton("🌐 TÊN MIỀN", callback_data="CAT|DOMAIN"),
