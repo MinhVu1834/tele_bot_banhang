@@ -420,15 +420,15 @@ CATALOG = [
     },
     {
         "cat_id": "BOT",
-        "title": "🤖🧠BOT NHẬN KM NẠP ĐÀU TỰ ĐỘNG",
-        "desc": "🤖🧠 **BOT SPAM NHẬN KM NẠP ĐẦU**\n💰 400K / 1 ",
+        "title": "🤖🧠BOT SPAM NHẬN KM NẠP ĐẦU ",
+        "desc": "🤖🧠 **👉 Ví dụ giống bot : @Nhan_code_free_bot**\n💰 400K / 1 ",
         "items": [
             {
                 "item_id": "bot_spam",
                 "group": "bot_spam",
                 "name": "Bot Spam Nạp Đầu",
                 "price": "400.000đ",
-                "detail": "🤖🧠 **\n👉 Ví dụ giống bot : @Nhan_code_free_bot 👇\n👉 Khi khách hàng nhấn vào bot thì bot sẽ chạy kịch bản hướng dẫn khách hàng đăng ký đúng link và gửi bill chuyển khoản vào bot, bot sẽ chuyển tiếp tên tài khoản game , thời gian đăng ký và bill chuyển khoản của khách hàng về 1 tele admin của bạn để bạn treo bill 👇 📌 ** ",
+                "detail": "🤖🧠 **\n👉 Khi khách hàng nhấn vào bot thì bot sẽ chạy kịch bản hướng dẫn khách hàng đăng ký đúng link và gửi bill chuyển khoản vào bot\n Bot sẽ chuyển tiếp tên tài khoản game , thời gian đăng ký và bill chuyển khoản của khách hàng \n Về 1 tele admin của bạn để bạn treo bill 👇 📌 ** ",
                 "require_hint": "Yêu cầu: SL",
             },
         ],
