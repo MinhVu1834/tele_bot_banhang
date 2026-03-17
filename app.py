@@ -175,7 +175,7 @@ CATALOG = [
                 "detail": (
                     "**🐙 NÂNG CẤP TELEGRAM**\n\n"
                     "✅ 1 tháng: **125.000đ**\n"
-                    "✅ 3 tháng: **380.000đ**\n"
+                    "✅ 3 tháng: **360.000đ**\n"
                     "✅ 6 tháng: **550.000đ**\n"
                     "✅ 1 năm: **850.000đ**\n\n"
                     "📌 Bảo hành số ngày theo gói nâng cấp, không bảo hành tài khoản  bị đóng băng"
@@ -235,16 +235,16 @@ CATALOG = [
                 "item_id": "TIKTOK_BUILD",
                 "group": "TIKTOK",
                 "name": "Tiktok xây kênh 1-2K follow ",
-                "price": "220.000đ",
-                "detail": "🎵 **Tiktok xây kênh 1K - 2K follow**\n💰 Giá: **220.000đ**\n📌 Quốc gia: **Việt - US - UK**",
+                "price": "200.000đ",
+                "detail": "🎵 **Tiktok xây kênh 1K - 2K follow**\n💰 Giá: **200.000đ**\n📌 Quốc gia: **Việt - US - UK**",
                 "require_hint": "Yêu cầu: quốc gia | SL",
             },
             {
                 "item_id": "TIKTOK_LIVE",
                 "group": "TIKTOK",
                 "name": "Tiktok LIVE (Việt - US - UK)",
-                "price": "240.000đ",
-                "detail": "🎵 **Tài khoản Tiktok LIVE**\n💰 Giá: **240.000đ**\n📌 Quốc gia: **Việt - US - UK**\n📌 Bao log, bao back, bao hạn chế 5p, bao ngắt.",
+                "price": "250.000đ",
+                "detail": "🎵 **Tài khoản Tiktok LIVE**\n💰 Giá: **250.000đ**\n📌 Quốc gia: **Việt - US - UK**\n📌 Bao log, bao back, bao hạn chế 5p, bao ngắt.",
                 "require_hint": "Yêu cầu: quốc gia | SL",
             },
         ],
